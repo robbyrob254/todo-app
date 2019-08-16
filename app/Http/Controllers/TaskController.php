@@ -25,7 +25,11 @@ class TaskController extends Controller
             $q->filter($request->filter);
         }
 
-        $tasks = $q->orderBy('created_at', 'desc')->paginate(5);
+        if($request->sort) {
+            $q->sort($request->sort);
+        }
+
+        $tasks = $q->paginate(5);
 
         return TaskResource::collection($tasks);
     }

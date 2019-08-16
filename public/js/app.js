@@ -1752,7 +1752,7 @@ __webpack_require__.r(__webpack_exports__);
       params: {
         q: '',
         filter: '',
-        sort: ''
+        sort: 'new'
       },
       filter: {
         all: true,
@@ -1775,7 +1775,7 @@ __webpack_require__.r(__webpack_exports__);
     fetchTasks: function fetchTasks(page_url) {
       var _this = this;
 
-      page_url = page_url || '/api/tasks';
+      page_url = page_url || '/api/tasks?sort=' + this.params.sort;
       console.log(page_url);
       fetch(page_url).then(function (res) {
         return res.json();
@@ -1792,15 +1792,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     addParameter: function addParameter(key, value) {
-      this.params[key] = value;
-      var url = '/api/tasks?'; // add params to url
+      this.params[key] = value; // build url string from params
+
+      var url = '/api/tasks?';
 
       for (var prop in this.params) {
         if (this.params[prop] !== '') {
           url += prop + '=' + this.params[prop] + '&';
         }
-      } // strip last ampersand
-
+      }
 
       url = url.substring(0, url.length - 1);
       this.fetchTasks(url);
@@ -1947,39 +1947,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskFilter',
   props: ['filter'],
   data: function data() {
     return {
-      showDropdown: false
+      showDropdown: false,
+      sort: 'new'
     };
   },
   methods: {
-    filterTasks: function filterTasks(selected) {
-      this.$emit('add-parameter', 'filter', selected);
+    filterTasks: function filterTasks(option) {
+      this.$emit('add-parameter', 'filter', option);
       this.$emit('toggle-filter');
+    },
+    sortTasks: function sortTasks() {
+      this.$emit('add-parameter', 'sort', this.sort);
     }
   }
 });
@@ -20739,6 +20722,8 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "menu" }, [
     _c("div", [
+      _vm._m(0),
+      _vm._v(" "),
       _c(
         "button",
         {
@@ -20782,19 +20767,50 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _c(
-      "div",
-      {
-        staticClass: "dropdown is-right",
-        class: { "is-active": _vm.showDropdown },
-        on: {
-          click: function($event) {
-            _vm.showDropdown = !_vm.showDropdown
-          }
-        }
-      },
-      [_vm._m(0), _vm._v(" "), _vm._m(1)]
-    )
+    _c("div", [
+      _vm._m(1),
+      _vm._v(" "),
+      _c("div", { staticClass: "select" }, [
+        _c(
+          "select",
+          {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.sort,
+                expression: "sort"
+              }
+            ],
+            on: {
+              change: [
+                function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.sort = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                },
+                _vm.sortTasks
+              ]
+            }
+          },
+          [
+            _c("option", { attrs: { value: "new", selected: "" } }, [
+              _vm._v("Newest")
+            ]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "old" } }, [_vm._v("Oldest")])
+          ]
+        )
+      ])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -20802,72 +20818,13 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "dropdown-trigger" }, [
-      _c(
-        "button",
-        {
-          staticClass: "button",
-          attrs: { "aria-haspopup": "true", "aria-controls": "dropdown-menu" }
-        },
-        [
-          _c("span", [_vm._v("Dropdown button")]),
-          _vm._v(" "),
-          _c("span", { staticClass: "icon is-small" }, [
-            _c("i", {
-              staticClass: "fas fa-angle-down",
-              attrs: { "aria-hidden": "true" }
-            })
-          ])
-        ]
-      )
-    ])
+    return _c("p", [_c("strong", [_vm._v("Display")])])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "dropdown-menu",
-        attrs: { id: "dropdown-menu", role: "menu" }
-      },
-      [
-        _c("div", { staticClass: "dropdown-content" }, [
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("\n                    Dropdown item\n                ")
-          ]),
-          _vm._v(" "),
-          _c("a", { staticClass: "dropdown-item" }, [
-            _vm._v(
-              "\n                    Other dropdown item\n                "
-            )
-          ]),
-          _vm._v(" "),
-          _c(
-            "a",
-            { staticClass: "dropdown-item is-active", attrs: { href: "#" } },
-            [
-              _vm._v(
-                "\n                    Active dropdown item\n                "
-              )
-            ]
-          ),
-          _vm._v(" "),
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v(
-              "\n                    Other dropdown item\n                "
-            )
-          ]),
-          _vm._v(" "),
-          _c("hr", { staticClass: "dropdown-divider" }),
-          _vm._v(" "),
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("\n                    With a divider\n                ")
-          ])
-        ])
-      ]
-    )
+    return _c("p", [_c("strong", [_vm._v("Sort by")])])
   }
 ]
 render._withStripped = true

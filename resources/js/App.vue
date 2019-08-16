@@ -50,7 +50,7 @@
                 params: {
                     q: '',
                     filter: '',
-                    sort: ''
+                    sort: 'new'
                 },
                 filter: {
                     all: true,
@@ -71,7 +71,7 @@
         },
         methods: {
             fetchTasks(page_url) {
-                page_url = page_url || '/api/tasks'
+                page_url = page_url || '/api/tasks?sort=' + this.params.sort
                 console.log(page_url)
 
                 fetch(page_url)
@@ -89,15 +89,16 @@
             },
             addParameter(key, value) {
                 this.params[key] = value
+
+                // build url string from params
                 let url = '/api/tasks?'
-                // add params to url
                 for(const prop in this.params){
                     if(this.params[prop] !== ''){
                         url += prop + '=' + this.params[prop] + '&'
                     }
                 }
-                // strip last ampersand
                 url = url.substring(0, url.length - 1)
+
                 this.fetchTasks(url)
             },
             toggleFilter() {

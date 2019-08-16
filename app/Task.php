@@ -22,7 +22,7 @@ class Task extends Model
         'title', 'completed'
     ];
 
-     /**
+    /**
      * Filter by completed/active status
      *
      * @param  \Illuminate\Database\Eloquent\Builder $query
@@ -33,6 +33,20 @@ class Task extends Model
             return $query->where('completed', false);
         } else if($status == 'completed') {
             return $query->where('completed', true);
+        }
+    }
+
+    /**
+     * Filter by completed/active status
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param string $status
+     */
+    public function scopeSort($query, $option) {
+        if($option =='new') {
+            return $query->orderBy('created_at', 'desc');
+        } else if($option == 'old') {
+            return $query->orderBy('created_at', 'asc');
         }
     }
 }

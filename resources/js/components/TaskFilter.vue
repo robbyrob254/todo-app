@@ -1,6 +1,7 @@
 <template>
     <div class="menu">
         <div>
+            <p><strong>Display</strong></p>
             <button class="button"
                 :class="{'is-focused': filter.all}"
                 @click="filterTasks('all')">
@@ -17,36 +18,14 @@
                 Completed
             </button>
         </div>
-        <div class="dropdown is-right"
-            :class="{'is-active': showDropdown}"
-            @click="showDropdown = !showDropdown">
-            <div class="dropdown-trigger">
-                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
-                    <span>Dropdown button</span>
-                    <span class="icon is-small">
-                        <i class="fas fa-angle-down" aria-hidden="true"></i>
-                    </span>
-                </button>
-            </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                <div class="dropdown-content">
-                    <a href="#" class="dropdown-item">
-                        Dropdown item
-                    </a>
-                    <a class="dropdown-item">
-                        Other dropdown item
-                    </a>
-                    <a href="#" class="dropdown-item is-active">
-                        Active dropdown item
-                    </a>
-                    <a href="#" class="dropdown-item">
-                        Other dropdown item
-                    </a>
-                    <hr class="dropdown-divider">
-                    <a href="#" class="dropdown-item">
-                        With a divider
-                    </a>
-                </div>
+        <div>
+            <p><strong>Sort by</strong></p>
+            <div class="select">
+                <select v-model="sort"
+                    @change="sortTasks">
+                    <option value="new" selected>Newest</option>
+                    <option value="old">Oldest</option>
+                </select>
             </div>
         </div>
     </div>
@@ -58,13 +37,17 @@
         props: ['filter'],
         data() {
             return {
-                showDropdown: false
+                showDropdown: false,
+                sort: 'new'
             }
         },
         methods: {
-            filterTasks(selected) {
-                this.$emit('add-parameter', 'filter', selected)
+            filterTasks(option) {
+                this.$emit('add-parameter', 'filter', option)
                 this.$emit('toggle-filter')
+            },
+            sortTasks() {
+                this.$emit('add-parameter', 'sort', this.sort)
             }
         }
     }
