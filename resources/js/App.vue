@@ -7,22 +7,35 @@
             v-on:fetch-tasks="fetchTasks"
             v-bind:tasks="tasks">
         </task-list>
+        <pagination
+            v-on:fetch-tasks="fetchTasks"
+            v-bind:pagination="pagination">
+        </pagination>
     </div>
 </template>
 
 <script>
-    import TaskForm from './components/TaskForm.vue'
+    import Pagination from './components/Pagination.vue'
     import TaskList from './components/TaskList.vue'
+    import TaskForm from './components/TaskForm.vue'
 
     export default {
         name: 'App',
         components: {
-            TaskForm,
-            TaskList
+            TaskList,
+            Pagination,
+            TaskForm
         },
         data() {
             return {
-                tasks: []
+                tasks: [],
+                pagination: {
+                    prev_url: '',
+                    next_url: '',
+                    path: '',
+                    current_page: '',
+                    last_page: ''
+                }
             }
         },
         created() {
@@ -35,6 +48,11 @@
                     .then(res => res.json())
                     .then(res => {
                         this.tasks = res.data
+                        this.pagination.prev_url = res.links.prev
+                        this.pagination.next_url = res.links.next
+                        this.pagination.path = res.meta.path
+                        this.pagination.current_page = res.meta.current_page
+                        this.pagination.last_page = res.meta.last_page
                     })
                     .catch(err => console.log(err))
             },
