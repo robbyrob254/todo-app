@@ -13,9 +13,15 @@ class TaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::orderBy('created_at', 'desc')->paginate(5);
+        if($request->q) {
+            $tasks = Task::where('title', 'like', '%'.$request->q.'%')
+                ->orderBy('created_at', 'desc')
+                ->paginate(5);
+        } else {
+            $tasks = Task::orderBy('created_at', 'desc')->paginate(5);
+        }
 
         return TaskResource::collection($tasks);
     }

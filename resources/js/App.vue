@@ -1,8 +1,9 @@
 <template>
     <div>
-        <task-form
-            v-on:fetch-tasks="fetchTasks">
-        </task-form>
+        <search
+            v-on:fetch-tasks="fetchTasks"
+            v-bind:path="pagination.path">
+        </search>
         <task-list
             v-on:fetch-tasks="fetchTasks"
             v-bind:tasks="tasks">
@@ -11,17 +12,22 @@
             v-on:fetch-tasks="fetchTasks"
             v-bind:pagination="pagination">
         </pagination>
+        <task-form
+            v-on:fetch-tasks="fetchTasks">
+        </task-form>
     </div>
 </template>
 
 <script>
-    import Pagination from './components/Pagination.vue'
+    import Search from './components/Search.vue'
     import TaskList from './components/TaskList.vue'
+    import Pagination from './components/Pagination.vue'
     import TaskForm from './components/TaskForm.vue'
 
     export default {
         name: 'App',
         components: {
+            Search,
             TaskList,
             Pagination,
             TaskForm
@@ -44,6 +50,7 @@
         methods: {
             fetchTasks(page_url) {
                 page_url = page_url || '/api/tasks'
+                console.log(page_url)
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {
