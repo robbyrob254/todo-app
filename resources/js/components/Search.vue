@@ -21,7 +21,6 @@
 <script>
     export default {
         name: 'Search',
-        props: ['path'],
         data() {
             return {
                 query: ''
@@ -30,8 +29,7 @@
         methods: {
             searchTasks() {
                 if(this.query.trim() !== '') {
-                    let url = this.path + '?q=' + this.query
-                    this.$emit('fetch-tasks', url)
+                    this.$emit('add-parameter', 'q', this.query.trim())
                 }
             }
         }

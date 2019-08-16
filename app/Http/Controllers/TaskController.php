@@ -15,13 +15,17 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
+        $q = Task::query();
+
         if($request->q) {
-            $tasks = Task::where('title', 'like', '%'.$request->q.'%')
-                ->orderBy('created_at', 'desc')
-                ->paginate(5);
-        } else {
-            $tasks = Task::orderBy('created_at', 'desc')->paginate(5);
+            $q->where('title', 'like', '%'.$request->q.'%');
         }
+
+        if($request->filter) {
+            $q->filter($request->filter);
+        }
+
+        $tasks = $q->orderBy('created_at', 'desc')->paginate(5);
 
         return TaskResource::collection($tasks);
     }

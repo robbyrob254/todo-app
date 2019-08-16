@@ -1,12 +1,17 @@
 <template>
     <div>
         <search
-            v-on:fetch-tasks="fetchTasks"
+            v-on:add-parameter="addParameter"
             v-bind:path="pagination.path">
         </search>
         <task-form
             v-on:fetch-tasks="fetchTasks">
         </task-form>
+        <task-filter
+            v-on:add-parameter="addParameter"
+            v-on:toggle-filter="toggleFilter"
+            v-bind:filter="filter">
+        </task-filter>
         <div v-if="tasks.length !== 0">
             <task-list
                 v-on:fetch-tasks="fetchTasks"
@@ -25,6 +30,7 @@
 
 <script>
     import Search from './components/Search.vue'
+    import TaskFilter from './components/TaskFilter.vue'
     import TaskList from './components/TaskList.vue'
     import Pagination from './components/Pagination.vue'
     import TaskForm from './components/TaskForm.vue'
@@ -33,6 +39,7 @@
         name: 'App',
         components: {
             Search,
+            TaskFilter,
             TaskList,
             Pagination,
             TaskForm
@@ -40,6 +47,16 @@
         data() {
             return {
                 tasks: [],
+                params: {
+                    q: '',
+                    filter: '',
+                    sort: ''
+                },
+                filter: {
+                    all: true,
+                    active: false,
+                    completed: false
+                },
                 pagination: {
                     prev_url: '',
                     next_url: '',
@@ -55,9 +72,12 @@
         methods: {
             fetchTasks(page_url) {
                 page_url = page_url || '/api/tasks'
+                console.log(page_url)
+
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {
+                        console.log(res)
                         this.tasks = res.data
                         this.pagination.prev_url = res.links.prev
                         this.pagination.next_url = res.links.next
@@ -66,7 +86,27 @@
                         this.pagination.last_page = res.meta.last_page
                     })
                     .catch(err => console.log(err))
+            },
+            addParameter(key, value) {
+                this.params[key] = value
+                let url = '/api/tasks?'
+                // add params to url
+                for(const prop in this.params){
+                    if(this.params[prop] !== ''){
+                        url += prop + '=' + this.params[prop] + '&'
+                    }
+                }
+                // strip last ampersand
+                url = url.substring(0, url.length - 1)
+                this.fetchTasks(url)
+            },
+            toggleFilter() {
+                this.filter.all = false
+                this.filter.active = false
+                this.filter.completed = false
+                this.filter[this.params.filter] = true
             }
+
         }
     }
 </script>
