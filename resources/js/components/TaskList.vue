@@ -17,9 +17,6 @@
         components: {
             TaskItem
         },
-
-
-
         methods: {
             toggleTask(task) {
                 fetch('api/task', {

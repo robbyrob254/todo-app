@@ -4,17 +4,22 @@
             v-on:fetch-tasks="fetchTasks"
             v-bind:path="pagination.path">
         </search>
-        <task-list
-            v-on:fetch-tasks="fetchTasks"
-            v-bind:tasks="tasks">
-        </task-list>
-        <pagination
-            v-on:fetch-tasks="fetchTasks"
-            v-bind:pagination="pagination">
-        </pagination>
         <task-form
             v-on:fetch-tasks="fetchTasks">
         </task-form>
+        <div v-if="tasks.length !== 0">
+            <task-list
+                v-on:fetch-tasks="fetchTasks"
+                v-bind:tasks="tasks">
+            </task-list>
+            <pagination
+                v-on:fetch-tasks="fetchTasks"
+                v-bind:pagination="pagination">
+            </pagination>
+        </div>
+        <div v-else>
+            <p>No tasks found.</p>
+        </div>
     </div>
 </template>
 
@@ -50,7 +55,6 @@
         methods: {
             fetchTasks(page_url) {
                 page_url = page_url || '/api/tasks'
-                console.log(page_url)
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {
@@ -62,7 +66,7 @@
                         this.pagination.last_page = res.meta.last_page
                     })
                     .catch(err => console.log(err))
-            },
+            }
         }
     }
 </script>

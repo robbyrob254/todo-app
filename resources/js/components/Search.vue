@@ -4,7 +4,9 @@
             <label class="label">Search Tasks</label>
             <div class="field has-addons">
                 <div class="control is-expanded">
-                    <input class="input" type="text" placeholder="Task name" v-model="query">
+                    <input class="input" type="text" placeholder="Task name"
+                        v-model="query"
+                        v-on:keyup="searchTasks">
                 </div>
                 <div class="control">
                     <button class="button is-info">

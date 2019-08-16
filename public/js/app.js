@@ -1721,6 +1721,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -1753,7 +1758,6 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       page_url = page_url || '/api/tasks';
-      console.log(page_url);
       fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
@@ -1823,6 +1827,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -20344,17 +20350,25 @@ var render = function() {
         on: { "fetch-tasks": _vm.fetchTasks }
       }),
       _vm._v(" "),
-      _c("task-list", {
-        attrs: { tasks: _vm.tasks },
-        on: { "fetch-tasks": _vm.fetchTasks }
-      }),
+      _c("task-form", { on: { "fetch-tasks": _vm.fetchTasks } }),
       _vm._v(" "),
-      _c("pagination", {
-        attrs: { pagination: _vm.pagination },
-        on: { "fetch-tasks": _vm.fetchTasks }
-      }),
-      _vm._v(" "),
-      _c("task-form", { on: { "fetch-tasks": _vm.fetchTasks } })
+      _vm.tasks.length !== 0
+        ? _c(
+            "div",
+            [
+              _c("task-list", {
+                attrs: { tasks: _vm.tasks },
+                on: { "fetch-tasks": _vm.fetchTasks }
+              }),
+              _vm._v(" "),
+              _c("pagination", {
+                attrs: { pagination: _vm.pagination },
+                on: { "fetch-tasks": _vm.fetchTasks }
+              })
+            ],
+            1
+          )
+        : _c("div", [_c("p", [_vm._v("No tasks found.")])])
     ],
     1
   )
@@ -20497,6 +20511,7 @@ var render = function() {
               attrs: { type: "text", placeholder: "Task name" },
               domProps: { value: _vm.query },
               on: {
+                keyup: _vm.searchTasks,
                 input: function($event) {
                   if ($event.target.composing) {
                     return
