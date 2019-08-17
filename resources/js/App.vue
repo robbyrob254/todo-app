@@ -50,6 +50,7 @@
                 params: {
                     q: '',
                     filter: '',
+                    view: '5',
                     sort: 'new'
                 },
                 filter: {
@@ -72,12 +73,9 @@
         methods: {
             fetchTasks(page_url) {
                 page_url = page_url || '/api/tasks?sort=' + this.params.sort
-                console.log(page_url)
-
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {
-                        console.log(res)
                         this.tasks = res.data
                         this.pagination.prev_url = res.links.prev
                         this.pagination.next_url = res.links.next
@@ -89,17 +87,7 @@
             },
             addParameter(key, value) {
                 this.params[key] = value
-
-                // build url string from params
-                let url = '/api/tasks?'
-                for(const prop in this.params){
-                    if(this.params[prop] !== ''){
-                        url += prop + '=' + this.params[prop] + '&'
-                    }
-                }
-                url = url.substring(0, url.length - 1)
-
-                this.fetchTasks(url)
+                this.fetchTasks(this.buildURL)
             },
             toggleFilter() {
                 this.filter.all = false
@@ -108,6 +96,18 @@
                 this.filter[this.params.filter] = true
             }
 
+        },
+        computed: {
+            // build url string from params
+            buildURL() {
+                let url = '/api/tasks?'
+                for(const prop in this.params){
+                    if(this.params[prop] !== ''){
+                        url += prop + '=' + this.params[prop] + '&'
+                    }
+                }
+                return url.substring(0, url.length - 1)
+            }
         }
     }
 </script>

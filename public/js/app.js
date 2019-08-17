@@ -1752,6 +1752,7 @@ __webpack_require__.r(__webpack_exports__);
       params: {
         q: '',
         filter: '',
+        view: '5',
         sort: 'new'
       },
       filter: {
@@ -1776,11 +1777,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       page_url = page_url || '/api/tasks?sort=' + this.params.sort;
-      console.log(page_url);
       fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
-        console.log(res);
         _this.tasks = res.data;
         _this.pagination.prev_url = res.links.prev;
         _this.pagination.next_url = res.links.next;
@@ -1792,8 +1791,19 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     addParameter: function addParameter(key, value) {
-      this.params[key] = value; // build url string from params
-
+      this.params[key] = value;
+      this.fetchTasks(this.buildURL);
+    },
+    toggleFilter: function toggleFilter() {
+      this.filter.all = false;
+      this.filter.active = false;
+      this.filter.completed = false;
+      this.filter[this.params.filter] = true;
+    }
+  },
+  computed: {
+    // build url string from params
+    buildURL: function buildURL() {
       var url = '/api/tasks?';
 
       for (var prop in this.params) {
@@ -1802,14 +1812,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
 
-      url = url.substring(0, url.length - 1);
-      this.fetchTasks(url);
-    },
-    toggleFilter: function toggleFilter() {
-      this.filter.all = false;
-      this.filter.active = false;
-      this.filter.completed = false;
-      this.filter[this.params.filter] = true;
+      return url.substring(0, url.length - 1);
     }
   }
 });
@@ -1851,9 +1854,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Pagination",
-  props: ['pagination']
+  props: ['pagination'],
+  computed: {
+    hasPagination: function hasPagination() {
+      return !(this.pagination.prev_url === null && this.pagination.next_url === null);
+    }
+  }
 });
 
 /***/ }),
@@ -1947,13 +1956,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskFilter',
   props: ['filter'],
   data: function data() {
     return {
       showDropdown: false,
-      sort: 'new'
+      sort: 'new',
+      view: '5'
     };
   },
   methods: {
@@ -1963,6 +1987,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     sortTasks: function sortTasks() {
       this.$emit('add-parameter', 'sort', this.sort);
+    },
+    viewTasks: function viewTasks() {
+      this.$emit('add-parameter', 'view', this.view);
     }
   }
 });
@@ -2141,7 +2168,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.menu[data-v-0e6aab88] {\n    display: flex;\n    flex-flow: row nowrap;\n    justify-content: space-between;\n    margin-bottom: 1rem;\n}\n", ""]);
+exports.push([module.i, "\n.menu[data-v-0e6aab88] {\n    display: flex;\n    flex-flow: row nowrap;\n    justify-content: space-between;\n    margin-bottom: 1rem;\n}\n.ib[data-v-0e6aab88] {\n    display: inline-block;\n}\n", ""]);
 
 // exports
 
@@ -20557,6 +20584,14 @@ var render = function() {
   return _c(
     "nav",
     {
+      directives: [
+        {
+          name: "show",
+          rawName: "v-show",
+          value: _vm.hasPagination,
+          expression: "hasPagination"
+        }
+      ],
       staticClass: "pagination is-centered",
       attrs: { role: "navigation", "aria-label": "pagination" }
     },
@@ -20768,47 +20803,96 @@ var render = function() {
     ]),
     _vm._v(" "),
     _c("div", [
-      _vm._m(1),
-      _vm._v(" "),
-      _c("div", { staticClass: "select" }, [
-        _c(
-          "select",
-          {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.sort,
-                expression: "sort"
+      _c("div", { staticClass: "ib" }, [
+        _vm._m(1),
+        _vm._v(" "),
+        _c("div", { staticClass: "select" }, [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.sort,
+                  expression: "sort"
+                }
+              ],
+              on: {
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.sort = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  _vm.sortTasks
+                ]
               }
-            ],
-            on: {
-              change: [
-                function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.sort = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                },
-                _vm.sortTasks
-              ]
-            }
-          },
-          [
-            _c("option", { attrs: { value: "new", selected: "" } }, [
-              _vm._v("Newest")
-            ]),
-            _vm._v(" "),
-            _c("option", { attrs: { value: "old" } }, [_vm._v("Oldest")])
-          ]
-        )
+            },
+            [
+              _c("option", { attrs: { value: "new", selected: "" } }, [
+                _vm._v("Newest")
+              ]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "old" } }, [_vm._v("Oldest")])
+            ]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "ib" }, [
+        _vm._m(2),
+        _vm._v(" "),
+        _c("div", { staticClass: "select" }, [
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.view,
+                  expression: "view"
+                }
+              ],
+              on: {
+                change: [
+                  function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.view = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  },
+                  _vm.viewTasks
+                ]
+              }
+            },
+            [
+              _c("option", { attrs: { value: "5" } }, [_vm._v("5")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "10" } }, [_vm._v("10")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "15" } }, [_vm._v("15")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "20" } }, [_vm._v("20")])
+            ]
+          )
+        ])
       ])
     ])
   ])
@@ -20825,6 +20909,12 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("p", [_c("strong", [_vm._v("Sort by")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [_c("strong", [_vm._v("Per page")])])
   }
 ]
 render._withStripped = true

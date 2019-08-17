@@ -1,5 +1,6 @@
 <template>
-    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+    <nav class="pagination is-centered" role="navigation" aria-label="pagination"
+        v-show="hasPagination">
         <a class="pagination-previous"
             :disabled="pagination.prev_url === null"
             @click="$emit('fetch-tasks', pagination.prev_url)">
@@ -28,6 +29,11 @@
     export default {
         name: "Pagination",
         props: ['pagination'],
+        computed: {
+            hasPagination() {
+                return !(this.pagination.prev_url === null && this.pagination.next_url === null)
+            }
+        }
     }
 </script>
 

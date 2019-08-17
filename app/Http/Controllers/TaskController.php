@@ -29,7 +29,11 @@ class TaskController extends Controller
             $q->sort($request->sort);
         }
 
-        $tasks = $q->paginate(5);
+        if($request->view) {
+            $tasks = $q->paginate($request->view);
+        } else {
+            $tasks = $q->paginate(5);
+        }
 
         return TaskResource::collection($tasks);
     }
