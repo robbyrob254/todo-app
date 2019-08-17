@@ -15,52 +15,24 @@
 
             <div id="navbarBasicExample" class="navbar-menu">
                 <div class="navbar-start">
-                    <a href="/#/" class="navbar-item">
-                        Home
-                    </a>
-
-                    <a href="/#/todo" class="navbar-item">
-                        App
-                    </a>
-
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link">
-                        More
-                        </a>
-
-                        <div class="navbar-dropdown">
-                            <a class="navbar-item">
-                                About
-                            </a>
-                            <a class="navbar-item">
-                                Jobs
-                            </a>
-                            <a class="navbar-item">
-                                Contact
-                            </a>
-                            <hr class="navbar-divider">
-                            <a class="navbar-item">
-                                Report an issue
-                            </a>
-                        </div>
-                    </div>
+                    <router-link to="/" class="navbar-item">Home</router-link>
+                    <router-link to="/about" class="navbar-item">About</router-link>
+                    <router-link to="/todo" class="navbar-item">App</router-link>
                 </div>
 
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                        <a class="button is-primary">
-                            <strong>Sign up</strong>
-                        </a>
-                        <a class="button is-light">
-                            Log in
-                        </a>
+                            <router-link to="/register" class="button is-primary">Sign up</router-link>
+                            <router-link to="/login" class="button is-light">Log in</router-link>
                         </div>
                     </div>
                 </div>
             </div>
         </nav>
-        <router-view></router-view>
+        <section class="section">
+            <router-view></router-view>
+        </section>
     </div>
 </template>
 

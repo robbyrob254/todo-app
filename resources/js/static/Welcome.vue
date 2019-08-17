@@ -1,6 +1,6 @@
 <template>
     <div>
-        Landing page content here
+        Welcome Page
     </div>
 </template>
 
