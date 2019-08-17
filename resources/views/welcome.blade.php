@@ -9,8 +9,8 @@
         <link rel="stylesheet" href="css/app.css">
     </head>
     <body>
-        <div id="app" class="section">
-            <app></app>
+        <div id="app">
+            <master></master>
         </div>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>

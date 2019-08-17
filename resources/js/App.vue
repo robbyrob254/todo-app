@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <section class="section">
         <search
             v-on:add-parameter="addParameter"
             v-bind:path="pagination.path">
@@ -25,7 +25,7 @@
         <div v-else>
             <p>No tasks found.</p>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
