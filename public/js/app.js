@@ -1723,15 +1723,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -1751,7 +1742,7 @@ __webpack_require__.r(__webpack_exports__);
       tasks: [],
       params: {
         q: '',
-        filter: '',
+        filter: 'all',
         view: '5',
         sort: 'new'
       },
@@ -1770,22 +1761,34 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
+    var _this = this;
+
     this.fetchTasks();
+    eventBus.$on('fetchTasks', function (url) {
+      return _this.fetchTasks(url);
+    });
+    eventBus.$on('toggleFilter', function () {
+      return _this.toggleFilter();
+    });
+    eventBus.$on('addParameter', function (key, value) {
+      return _this.addParameter(key, value);
+    });
   },
   methods: {
     fetchTasks: function fetchTasks(page_url) {
-      var _this = this;
+      var _this2 = this;
 
       page_url = page_url || '/api/tasks?sort=' + this.params.sort;
+      console.log(page_url);
       fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
-        _this.tasks = res.data;
-        _this.pagination.prev_url = res.links.prev;
-        _this.pagination.next_url = res.links.next;
-        _this.pagination.path = res.meta.path;
-        _this.pagination.current_page = res.meta.current_page;
-        _this.pagination.last_page = res.meta.last_page;
+        _this2.tasks = res.data;
+        _this2.pagination.prev_url = res.links.prev;
+        _this2.pagination.next_url = res.links.next;
+        _this2.pagination.path = res.meta.path;
+        _this2.pagination.current_page = res.meta.current_page;
+        _this2.pagination.last_page = res.meta.last_page;
       })["catch"](function (err) {
         return console.log(err);
       });
@@ -1927,9 +1930,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Pagination",
   props: ['pagination'],
+  methods: {
+    fetchByURL: function fetchByURL(url) {
+      eventBus.$emit('fetchTasks', url);
+    },
+    fetchByPageNum: function fetchByPageNum(page) {
+      var url = this.pagination.path + '?page=' + page;
+      eventBus.$emit('fetchTasks', url);
+    }
+  },
   computed: {
     hasPagination: function hasPagination() {
       return !(this.pagination.prev_url === null && this.pagination.next_url === null);
@@ -1978,7 +1992,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     searchTasks: function searchTasks() {
       if (this.query.trim() !== '') {
-        this.$emit('add-parameter', 'q', this.query.trim());
+        eventBus.$emit('addParameter', 'q', this.query.trim());
       }
     }
   }
@@ -2040,8 +2054,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskFilter',
   props: ['filter'],
@@ -2054,14 +2066,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     filterTasks: function filterTasks(option) {
-      this.$emit('add-parameter', 'filter', option);
-      this.$emit('toggle-filter');
+      eventBus.$emit('addParameter', 'filter', option);
+      eventBus.$emit('toggleFilter');
     },
     sortTasks: function sortTasks() {
-      this.$emit('add-parameter', 'sort', this.sort);
+      eventBus.$emit('addParameter', 'sort', this.sort);
     },
     viewTasks: function viewTasks() {
-      this.$emit('add-parameter', 'view', this.view);
+      eventBus.$emit('addParameter', 'view', this.view);
     }
   }
 });
@@ -2120,8 +2132,7 @@ __webpack_require__.r(__webpack_exports__);
           return res.json();
         }).then(function (res) {
           _this.task.title = '';
-
-          _this.$emit('fetch-tasks');
+          eventBus.$emit('fetch-tasks');
         })["catch"](function (err) {
           return console.log(err);
         });
@@ -2158,7 +2169,37 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskItem',
-  props: ['task']
+  props: ['task'],
+  methods: {
+    toggleTask: function toggleTask() {
+      fetch('api/task', {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(this.task)
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        eventBus.$emit('fetchTasks');
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    },
+    deleteTask: function deleteTask() {
+      if (confirm("Delete ".concat(this.task.title, "?"))) {
+        fetch("api/task/".concat(this.task.id), {
+          method: 'DELETE'
+        }).then(function (res) {
+          return res.json();
+        }).then(function (res) {
+          eventBus.$emit('fetchTasks');
+        })["catch"](function (err) {
+          return console.log(err);
+        });
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -2181,48 +2222,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskList',
   props: ['tasks'],
   components: {
     TaskItem: _TaskItem_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  methods: {
-    toggleTask: function toggleTask(task) {
-      var _this = this;
-
-      fetch('api/task', {
-        method: 'put',
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(task)
-      }).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        _this.$emit('fetch-tasks');
-      })["catch"](function (err) {
-        return console.log(err);
-      });
-    },
-    deleteTask: function deleteTask(task) {
-      var _this2 = this;
-
-      if (confirm("Delete ".concat(task.title, "?"))) {
-        fetch("api/task/".concat(task.id), {
-          method: 'delete'
-        }).then(function (res) {
-          return res.json();
-        }).then(function (res) {
-          _this2.$emit('fetch-tasks');
-        })["catch"](function (err) {
-          return console.log(err);
-        });
-      }
-    }
   }
 });
 
@@ -20669,34 +20674,19 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("search", {
-        attrs: { path: _vm.pagination.path },
-        on: { "add-parameter": _vm.addParameter }
-      }),
+      _c("search"),
       _vm._v(" "),
-      _c("task-form", { on: { "fetch-tasks": _vm.fetchTasks } }),
+      _c("task-form"),
       _vm._v(" "),
-      _c("task-filter", {
-        attrs: { filter: _vm.filter },
-        on: {
-          "add-parameter": _vm.addParameter,
-          "toggle-filter": _vm.toggleFilter
-        }
-      }),
+      _c("task-filter", { attrs: { filter: _vm.filter } }),
       _vm._v(" "),
       _vm.tasks.length !== 0
         ? _c(
             "div",
             [
-              _c("task-list", {
-                attrs: { tasks: _vm.tasks },
-                on: { "fetch-tasks": _vm.fetchTasks }
-              }),
+              _c("task-list", { attrs: { tasks: _vm.tasks } }),
               _vm._v(" "),
-              _c("pagination", {
-                attrs: { pagination: _vm.pagination },
-                on: { "fetch-tasks": _vm.fetchTasks }
-              })
+              _c("pagination", { attrs: { pagination: _vm.pagination } })
             ],
             1
           )
@@ -20955,7 +20945,7 @@ var render = function() {
           attrs: { disabled: _vm.pagination.prev_url === null },
           on: {
             click: function($event) {
-              return _vm.$emit("fetch-tasks", _vm.pagination.prev_url)
+              return _vm.fetchByURL(_vm.pagination.prev_url)
             }
           }
         },
@@ -20969,7 +20959,7 @@ var render = function() {
           attrs: { disabled: _vm.pagination.next_url === null },
           on: {
             click: function($event) {
-              return _vm.$emit("fetch-tasks", _vm.pagination.next_url)
+              return _vm.fetchByURL(_vm.pagination.next_url)
             }
           }
         },
@@ -20989,10 +20979,7 @@ var render = function() {
                 attrs: { "aria-label": "Goto page " + page },
                 on: {
                   click: function($event) {
-                    return _vm.$emit(
-                      "fetch-tasks",
-                      _vm.pagination.path + "?page=" + page
-                    )
+                    return _vm.fetchByPageNum(page)
                   }
                 }
               },
@@ -21373,11 +21360,7 @@ var render = function() {
     _c("input", {
       attrs: { type: "checkbox" },
       domProps: { checked: _vm.task.completed == true },
-      on: {
-        click: function($event) {
-          return _vm.$emit("tog-task", _vm.task)
-        }
-      }
+      on: { click: _vm.toggleTask }
     }),
     _vm._v(" "),
     _c("h4", { class: { "is-complete": _vm.task.completed } }, [
@@ -21388,11 +21371,7 @@ var render = function() {
       "button",
       {
         staticClass: "delete has-background-danger",
-        on: {
-          click: function($event) {
-            return _vm.$emit("del-task", _vm.task)
-          }
-        }
+        on: { click: _vm.deleteTask }
       },
       [_vm._v("\n        X\n    ")]
     )
@@ -21427,12 +21406,7 @@ var render = function() {
       return _c(
         "li",
         { key: task.id },
-        [
-          _c("task-item", {
-            attrs: { task: task },
-            on: { "tog-task": _vm.toggleTask, "del-task": _vm.deleteTask }
-          })
-        ],
+        [_c("task-item", { attrs: { task: task } })],
         1
       )
     }),
@@ -36706,12 +36680,12 @@ __webpack_require__.r(__webpack_exports__);
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
-__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js"); //window.Vue = require('vue');
+__webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
 
-
+window.eventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('Master', __webpack_require__(/*! ./layouts/Master.vue */ "./resources/js/layouts/Master.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({

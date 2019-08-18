@@ -40,7 +40,7 @@
                     .then(res => res.json())
                     .then(res => {
                         this.task.title = ''
-                        this.$emit('fetch-tasks')
+                        eventBus.$emit('fetch-tasks')
                     })
                     .catch(err => console.log(err))
                 }

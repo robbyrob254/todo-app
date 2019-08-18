@@ -2,12 +2,12 @@
     <div class="list-item">
         <input type="checkbox"
             :checked="task.completed == true"
-            @click="$emit('tog-task', task)">
+            @click="toggleTask">
         <h4 v-bind:class="{'is-complete': task.completed}">
             {{ task.title }}
         </h4>
         <button class="delete has-background-danger"
-            @click="$emit('del-task', task)">
+            @click="deleteTask">
             X
         </button>
     </div>
@@ -16,7 +16,35 @@
 <script>
     export default {
         name: 'TaskItem',
-        props: ['task']
+        props: ['task'],
+        methods: {
+            toggleTask() {
+                fetch('api/task', {
+                    method: 'PUT',
+                    headers: {
+                            'content-type': 'application/json'
+                        },
+                    body: JSON.stringify(this.task)
+                })
+                .then(res => res.json())
+                .then(res => {
+                    eventBus.$emit('fetchTasks')
+                })
+                .catch(err => console.log(err))
+            },
+            deleteTask() {
+                if(confirm(`Delete ${this.task.title}?`)) {
+                    fetch(`api/task/${this.task.id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        eventBus.$emit('fetchTasks')
+                    })
+                    .catch(err => console.log(err))
+                }
+            },
+        }
     }
 </script>
 

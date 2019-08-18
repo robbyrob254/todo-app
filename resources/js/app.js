@@ -6,11 +6,11 @@
 
 require('./bootstrap');
 
-//window.Vue = require('vue');
-
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import routes from './routes';
+
+window.eventBus = new Vue();
 
 Vue.component('Master', require('./layouts/Master.vue').default);
 Vue.use(VueRouter);

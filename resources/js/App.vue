@@ -1,24 +1,15 @@
 <template>
     <div>
-        <search
-            v-on:add-parameter="addParameter"
-            v-bind:path="pagination.path">
-        </search>
-        <task-form
-            v-on:fetch-tasks="fetchTasks">
-        </task-form>
+        <search></search>
+        <task-form></task-form>
         <task-filter
-            v-on:add-parameter="addParameter"
-            v-on:toggle-filter="toggleFilter"
             v-bind:filter="filter">
         </task-filter>
         <div v-if="tasks.length !== 0">
             <task-list
-                v-on:fetch-tasks="fetchTasks"
                 v-bind:tasks="tasks">
             </task-list>
             <pagination
-                v-on:fetch-tasks="fetchTasks"
                 v-bind:pagination="pagination">
             </pagination>
         </div>
@@ -49,7 +40,7 @@
                 tasks: [],
                 params: {
                     q: '',
-                    filter: '',
+                    filter: 'all',
                     view: '5',
                     sort: 'new'
                 },
@@ -69,10 +60,14 @@
         },
         created() {
             this.fetchTasks()
+            eventBus.$on('fetchTasks', (url) => this.fetchTasks(url))
+            eventBus.$on('toggleFilter', () => this.toggleFilter())
+            eventBus.$on('addParameter', (key, value) => this.addParameter(key, value))
         },
         methods: {
             fetchTasks(page_url) {
                 page_url = page_url || '/api/tasks?sort=' + this.params.sort
+                console.log(page_url)
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {

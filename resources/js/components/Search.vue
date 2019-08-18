@@ -29,7 +29,7 @@
         methods: {
             searchTasks() {
                 if(this.query.trim() !== '') {
-                    this.$emit('add-parameter', 'q', this.query.trim())
+                    eventBus.$emit('addParameter', 'q', this.query.trim())
                 }
             }
         }

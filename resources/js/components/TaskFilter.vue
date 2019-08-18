@@ -22,8 +22,7 @@
             <div class="ib">
                 <p><strong>Sort by</strong></p>
                 <div class="select">
-                    <select v-model="sort"
-                        @change="sortTasks">
+                    <select v-model="sort" @change="sortTasks">
                         <option value="new" selected>Newest</option>
                         <option value="old">Oldest</option>
                     </select>
@@ -32,8 +31,7 @@
             <div class="ib">
                 <p><strong>Per page</strong></p>
                 <div class="select">
-                    <select v-model="view"
-                        @change="viewTasks">
+                    <select v-model="view" @change="viewTasks">
                         <option value="5">5</option>
                         <option value="10">10</option>
                         <option value="15">15</option>
@@ -58,14 +56,14 @@
         },
         methods: {
             filterTasks(option) {
-                this.$emit('add-parameter', 'filter', option)
-                this.$emit('toggle-filter')
+                eventBus.$emit('addParameter', 'filter', option)
+                eventBus.$emit('toggleFilter')
             },
             sortTasks() {
-                this.$emit('add-parameter', 'sort', this.sort)
+                eventBus.$emit('addParameter', 'sort', this.sort)
             },
             viewTasks() {
-                this.$emit('add-parameter', 'view', this.view)
+                eventBus.$emit('addParameter', 'view', this.view)
             }
         }
     }
