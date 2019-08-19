@@ -1783,13 +1783,15 @@ __webpack_require__.r(__webpack_exports__);
       fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
-        console.log(_this2.tasks, res.data); // set current page to last available
-
+        // if current page request is greater than
+        // the total number of pages
         if (_this2.params.page > res.meta.last_page) {
+          // set current page to last available
           _this2.params.page = res.meta.last_page;
 
           _this2.fetchTasks(_this2.buildURL);
         } else {
+          // set component data
           if (res.links.prev !== null) res.links.prev = res.links.prev.substring(res.links.prev.length - 1);
           if (res.links.next !== null) res.links.next = res.links.next.substring(res.links.next.length - 1);
           _this2.tasks = res.data;
@@ -1946,9 +1948,8 @@ __webpack_require__.r(__webpack_exports__);
   name: "Pagination",
   props: ['pagination'],
   methods: {
-    fetchByPageNum: function fetchByPageNum(page) {
-      var url = this.pagination.path + '?page=' + page;
-      eventBus.$emit('addParameter', 'page', page);
+    fetchPage: function fetchPage(num) {
+      eventBus.$emit('addParameter', 'page', num);
     }
   },
   computed: {
@@ -2016,6 +2017,38 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2287,6 +2320,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Master'
 });
@@ -2326,7 +2363,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.menu[data-v-0e6aab88] {\n    display: flex;\n    flex-flow: row nowrap;\n    justify-content: space-between;\n    margin-bottom: 1rem;\n}\n.ib[data-v-0e6aab88] {\n    display: inline-block;\n}\n", ""]);
+exports.push([module.i, "\n.navbar[data-v-0e6aab88] {\n    margin-bottom: .5rem;\n}\n.navbar[data-v-0e6aab88], .navbar-brand[data-v-0e6aab88], .navbar-burger[data-v-0e6aab88] {\n    min-height: auto;\n    height: auto;\n    width: auto;\n}\n.navbar-burger[data-v-0e6aab88]:hover {\n    background-color: transparent;\n}\n.navbar-start[data-v-0e6aab88] {\n    margin-left: -12px;\n}\n.navbar-end[data-v-0e6aab88] {\n    margin-right: -12px;\n}\n", ""]);
 
 // exports
 
@@ -2364,7 +2401,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nul[data-v-0afd8bae] {\n    list-style-type: none;\n}\nli[data-v-0afd8bae]:not(:last-child) {\n    border-bottom: 1px solid rgba(10,10,10,.1);\n}\n", ""]);
+exports.push([module.i, "\nul[data-v-0afd8bae] {\n    list-style-type: none;\n    box-shadow: none;\n}\nli[data-v-0afd8bae]:not(:last-child) {\n    border-bottom: 1px solid rgba(10,10,10,.1);\n}\n", ""]);
 
 // exports
 
@@ -20952,7 +20989,7 @@ var render = function() {
           attrs: { disabled: _vm.pagination.prev === null },
           on: {
             click: function($event) {
-              return _vm.fetchByPageNum(_vm.pagination.prev)
+              return _vm.fetchPage(_vm.pagination.prev)
             }
           }
         },
@@ -20966,7 +21003,7 @@ var render = function() {
           attrs: { disabled: _vm.pagination.next_url === null },
           on: {
             click: function($event) {
-              return _vm.fetchByPageNum(_vm.pagination.next)
+              return _vm.fetchPage(_vm.pagination.next)
             }
           }
         },
@@ -20986,7 +21023,7 @@ var render = function() {
                 attrs: { "aria-label": "Goto page " + page },
                 on: {
                   click: function($event) {
-                    return _vm.fetchByPageNum(page)
+                    return _vm.fetchPage(page)
                   }
                 }
               },
@@ -21101,166 +21138,213 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "menu" }, [
-    _c("div", [
+  return _c(
+    "nav",
+    {
+      staticClass: "navbar",
+      attrs: { role: "navigation", "aria-label": "main navigation" }
+    },
+    [
       _vm._m(0),
       _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "button",
-          class: { "is-focused": _vm.filter.all },
-          on: {
-            click: function($event) {
-              return _vm.filterTasks("all")
-            }
-          }
-        },
-        [_vm._v("\n            All\n        ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "button",
-          class: { "is-focused": _vm.filter.active },
-          on: {
-            click: function($event) {
-              return _vm.filterTasks("active")
-            }
-          }
-        },
-        [_vm._v("\n            Active\n        ")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "button",
-          class: { "is-focused": _vm.filter.completed },
-          on: {
-            click: function($event) {
-              return _vm.filterTasks("completed")
-            }
-          }
-        },
-        [_vm._v("\n            Completed\n        ")]
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", [
-      _c("div", { staticClass: "ib" }, [
-        _vm._m(1),
+      _c("div", { staticClass: "navbar-menu", attrs: { id: "filter" } }, [
+        _c("div", { staticClass: "navbar-start" }, [
+          _c("div", { staticClass: "navbar-item" }, [
+            _c("div", { staticClass: "field" }, [
+              _c("label", { staticClass: "label" }, [_vm._v("Display")]),
+              _vm._v(" "),
+              _c("div", { staticClass: "field is-grouped" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      class: { "is-focused": _vm.filter.all },
+                      on: {
+                        click: function($event) {
+                          return _vm.filterTasks("all")
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                                All\n                            "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "control" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      class: { "is-focused": _vm.filter.active },
+                      on: {
+                        click: function($event) {
+                          return _vm.filterTasks("active")
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                                Active\n                            "
+                      )
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "control" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "button",
+                      class: { "is-focused": _vm.filter.completed },
+                      on: {
+                        click: function($event) {
+                          return _vm.filterTasks("completed")
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                                Completed\n                            "
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ])
+        ]),
         _vm._v(" "),
-        _c("div", { staticClass: "select" }, [
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.sort,
-                  expression: "sort"
-                }
-              ],
-              on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.sort = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  _vm.sortTasks
-                ]
-              }
-            },
-            [
-              _c("option", { attrs: { value: "new", selected: "" } }, [
-                _vm._v("Newest")
-              ]),
+        _c("div", { staticClass: "navbar-end" }, [
+          _c("div", { staticClass: "navbar-item" }, [
+            _c("div", { staticClass: "field" }, [
+              _c("label", { staticClass: "label" }, [_vm._v("Sort by")]),
               _vm._v(" "),
-              _c("option", { attrs: { value: "old" } }, [_vm._v("Oldest")])
-            ]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "ib" }, [
-        _vm._m(2),
-        _vm._v(" "),
-        _c("div", { staticClass: "select" }, [
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.view,
-                  expression: "view"
-                }
-              ],
-              on: {
-                change: [
-                  function($event) {
-                    var $$selectedVal = Array.prototype.filter
-                      .call($event.target.options, function(o) {
-                        return o.selected
-                      })
-                      .map(function(o) {
-                        var val = "_value" in o ? o._value : o.value
-                        return val
-                      })
-                    _vm.view = $event.target.multiple
-                      ? $$selectedVal
-                      : $$selectedVal[0]
-                  },
-                  _vm.viewTasks
-                ]
-              }
-            },
-            [
-              _c("option", { attrs: { value: "5" } }, [_vm._v("5")]),
+              _c("div", { staticClass: "control" }, [
+                _c("div", { staticClass: "select is-fullwidth" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.sort,
+                          expression: "sort"
+                        }
+                      ],
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.sort = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          _vm.sortTasks
+                        ]
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "new", selected: "" } }, [
+                        _vm._v("Newest")
+                      ]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "old" } }, [
+                        _vm._v("Oldest")
+                      ])
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "navbar-item" }, [
+            _c("div", { staticClass: "field" }, [
+              _c("label", { staticClass: "label" }, [_vm._v("Per Page")]),
               _vm._v(" "),
-              _c("option", { attrs: { value: "10" } }, [_vm._v("10")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "15" } }, [_vm._v("15")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "20" } }, [_vm._v("20")])
-            ]
-          )
+              _c("div", { staticClass: "control" }, [
+                _c("div", { staticClass: "select is-fullwidth" }, [
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.view,
+                          expression: "view"
+                        }
+                      ],
+                      on: {
+                        change: [
+                          function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.view = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          },
+                          _vm.viewTasks
+                        ]
+                      }
+                    },
+                    [
+                      _c("option", { attrs: { value: "5" } }, [_vm._v("5")]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "10" } }, [_vm._v("10")]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "15" } }, [_vm._v("15")]),
+                      _vm._v(" "),
+                      _c("option", { attrs: { value: "20" } }, [_vm._v("20")])
+                    ]
+                  )
+                ])
+              ])
+            ])
+          ])
         ])
       ])
-    ])
-  ])
+    ]
+  )
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("p", [_c("strong", [_vm._v("Display")])])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", [_c("strong", [_vm._v("Sort by")])])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", [_c("strong", [_vm._v("Per page")])])
+    return _c("div", { staticClass: "navbar-brand" }, [
+      _c(
+        "a",
+        {
+          staticClass: "navbar-burger burger button",
+          attrs: {
+            role: "button",
+            "aria-label": "menu",
+            "aria-expanded": "false",
+            "data-target": "filter"
+          }
+        },
+        [_vm._v("\n            Filter\n        ")]
+      )
+    ])
   }
 ]
 render._withStripped = true
@@ -21514,7 +21598,16 @@ var render = function() {
       ]
     ),
     _vm._v(" "),
-    _c("section", { staticClass: "section" }, [_c("router-view")], 1)
+    _c("section", { staticClass: "section" }, [
+      _c("div", { staticClass: "columns is-centered" }, [
+        _c(
+          "div",
+          { staticClass: "column is-two-thirds-tablet is-half-widescreen" },
+          [_c("router-view")],
+          1
+        )
+      ])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -36701,6 +36794,21 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   router: router
+}); // navbar toggle
+
+document.addEventListener('DOMContentLoaded', function () {
+  var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+  if ($navbarBurgers.length > 0) {
+    $navbarBurgers.forEach(function (el) {
+      el.addEventListener('click', function () {
+        var target = el.dataset.target;
+        var $target = document.getElementById(target);
+        el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+      });
+    });
+  }
 });
 
 /***/ }),

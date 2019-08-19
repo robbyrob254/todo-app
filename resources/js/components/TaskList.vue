@@ -21,6 +21,7 @@
 <style scoped>
     ul {
         list-style-type: none;
+        box-shadow: none;
     }
 
     li:not(:last-child) {

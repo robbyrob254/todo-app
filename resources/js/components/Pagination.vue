@@ -5,12 +5,12 @@
         v-show="hasPagination">
         <a class="pagination-previous"
             :disabled="pagination.prev === null"
-            @click="fetchByPageNum(pagination.prev)">
+            @click="fetchPage(pagination.prev)">
             Previous
         </a>
         <a class="pagination-next"
             :disabled="pagination.next_url === null"
-            @click="fetchByPageNum(pagination.next)">
+            @click="fetchPage(pagination.next)">
             Next page
         </a>
         <ul class="pagination-list">
@@ -19,7 +19,7 @@
                 <a class="pagination-link"
                     :class="{ 'is-current': pagination.current_page === page }"
                     :aria-label="'Goto page ' + page"
-                    @click="fetchByPageNum(page)">
+                    @click="fetchPage(page)">
                     {{ page }}
                 </a>
             </li>
@@ -32,9 +32,8 @@
         name: "Pagination",
         props: ['pagination'],
         methods: {
-            fetchByPageNum(page) {
-                let url = this.pagination.path + '?page=' + page
-                eventBus.$emit('addParameter', 'page', page)
+            fetchPage(num) {
+                eventBus.$emit('addParameter', 'page', num)
             }
         },
         computed: {

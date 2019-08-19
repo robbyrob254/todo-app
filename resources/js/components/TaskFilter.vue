@@ -1,47 +1,79 @@
 <template>
-    <div class="menu">
-        <div>
-            <p><strong>Display</strong></p>
-            <button class="button"
-                :class="{'is-focused': filter.all}"
-                @click="filterTasks('all')">
-                All
-            </button>
-            <button class="button"
-                :class="{'is-focused': filter.active}"
-                @click="filterTasks('active')">
-                Active
-            </button>
-            <button class="button"
-                :class="{'is-focused': filter.completed}"
-                @click="filterTasks('completed')">
-                Completed
-            </button>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a role="button" class="navbar-burger burger button" aria-label="menu" aria-expanded="false" data-target="filter">
+                Filter
+            </a>
         </div>
-        <div>
-            <div class="ib">
-                <p><strong>Sort by</strong></p>
-                <div class="select">
-                    <select v-model="sort" @change="sortTasks">
-                        <option value="new" selected>Newest</option>
-                        <option value="old">Oldest</option>
-                    </select>
+
+        <div id="filter" class="navbar-menu">
+            <div class="navbar-start">
+                <div class="navbar-item">
+                    <div class="field">
+                        <label class="label">Display</label>
+                        <div class="field is-grouped">
+                            <div class="control">
+                                <button class="button"
+                                    :class="{'is-focused': filter.all}"
+                                    @click="filterTasks('all')">
+                                    All
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button class="button"
+                                    :class="{'is-focused': filter.active}"
+                                    @click="filterTasks('active')">
+                                    Active
+                                </button>
+                            </div>
+                            <div class="control">
+                                <button class="button"
+                                    :class="{'is-focused': filter.completed}"
+                                    @click="filterTasks('completed')">
+                                    Completed
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="ib">
-                <p><strong>Per page</strong></p>
-                <div class="select">
-                    <select v-model="view" @change="viewTasks">
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                    </select>
+
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="field">
+                        <label class="label">Sort by</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select v-model="sort" @change="sortTasks">
+                                    <option value="new" selected>Newest</option>
+                                    <option value="old">Oldest</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="navbar-item">
+                    <div class="field">
+                        <label class="label">Per Page</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select v-model="view" @change="viewTasks">
+                                    <option value="5">5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </nav>
+
 </template>
+
+
 
 <script>
     export default {
@@ -70,14 +102,21 @@
 </script>
 
 <style scoped>
-    .menu {
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: space-between;
-        margin-bottom: 1rem;
+    .navbar {
+        margin-bottom: .5rem;
     }
-
-    .ib {
-        display: inline-block;
+    .navbar, .navbar-brand, .navbar-burger {
+        min-height: auto;
+        height: auto;
+        width: auto;
+    }
+    .navbar-burger:hover {
+        background-color: transparent;
+    }
+    .navbar-start {
+        margin-left: -12px;
+    }
+    .navbar-end {
+        margin-right: -12px;
     }
 </style>

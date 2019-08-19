@@ -71,12 +71,14 @@
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {
-                        console.log(this.tasks, res.data)
-                        // set current page to last available
+                        // if current page request is greater than
+                        // the total number of pages
                         if(this.params.page > res.meta.last_page) {
+                            // set current page to last available
                             this.params.page = res.meta.last_page
                             this.fetchTasks(this.buildURL)
                         } else {
+                            // set component data
                             if(res.links.prev !== null)
                                 res.links.prev = res.links.prev.substring(res.links.prev.length -1)
                             if(res.links.next !== null)

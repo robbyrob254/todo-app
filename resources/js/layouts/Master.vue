@@ -31,7 +31,11 @@
             </div>
         </nav>
         <section class="section">
-            <router-view></router-view>
+            <div class="columns is-centered">
+                <div class="column is-two-thirds-tablet is-half-widescreen">
+                    <router-view></router-view>
+                </div>
+            </div>
         </section>
     </div>
 </template>
