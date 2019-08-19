@@ -1997,11 +1997,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     searchTasks: function searchTasks() {
-      if (this.query.trim() !== '') {
-        eventBus.$emit('addParameter', 'q', this.query.trim());
-      } else {
-        eventBus.$emit('addParameter', 'q', '');
-      }
+      eventBus.$emit('addParameter', 'q', this.query.trim());
     }
   }
 });
