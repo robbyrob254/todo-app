@@ -40,7 +40,7 @@
         },
         methods: {
             login() {
-                fetch('http://todo.localhost/api/login', {
+                fetch('/api/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -52,7 +52,8 @@
                 })
                 .then(res => res.json())
                 .then(res => {
-                    console.log(res)
+                    localStorage.setItem('access_token', res.access_token)
+                    this.$router.push('/todo')
                 })
                 .catch(err => console.log(err))
             }

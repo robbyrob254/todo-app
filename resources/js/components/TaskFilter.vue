@@ -14,21 +14,21 @@
                         <div class="field is-grouped">
                             <div class="control">
                                 <button class="button"
-                                    :class="{'is-focused': filter.all}"
+                                    :class="{'is-focused': $store.state.filter.all}"
                                     @click="filterTasks('all')">
                                     All
                                 </button>
                             </div>
                             <div class="control">
                                 <button class="button"
-                                    :class="{'is-focused': filter.active}"
+                                    :class="{'is-focused': $store.state.filter.active}"
                                     @click="filterTasks('active')">
                                     Active
                                 </button>
                             </div>
                             <div class="control">
                                 <button class="button"
-                                    :class="{'is-focused': filter.completed}"
+                                    :class="{'is-focused': $store.state.filter.completed}"
                                     @click="filterTasks('completed')">
                                     Completed
                                 </button>
@@ -78,7 +78,6 @@
 <script>
     export default {
         name: 'TaskFilter',
-        props: ['filter'],
         data() {
             return {
                 showDropdown: false,
@@ -113,10 +112,13 @@
     .navbar-burger:hover {
         background-color: transparent;
     }
-    .navbar-start {
-        margin-left: -12px;
-    }
-    .navbar-end {
-        margin-right: -12px;
+
+    @media screen and (min-width: 769px) {
+        .navbar-start {
+            margin-left: -12px;
+        }
+        .navbar-end {
+            margin-right: -12px;
+        }
     }
 </style>

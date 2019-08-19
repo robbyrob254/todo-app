@@ -2,16 +2,10 @@
     <div>
         <search></search>
         <task-form></task-form>
-        <task-filter
-            v-bind:filter="filter">
-        </task-filter>
-        <div v-if="tasks.length !== 0">
-            <task-list
-                v-bind:tasks="tasks">
-            </task-list>
-            <pagination
-                v-bind:pagination="pagination">
-            </pagination>
+        <task-filter></task-filter>
+        <div v-if="$store.state.tasks.length !== 0">
+            <task-list></task-list>
+            <pagination></pagination>
         </div>
         <div v-else>
             <p>No tasks found.</p>
@@ -35,30 +29,6 @@
             Pagination,
             TaskForm
         },
-        data() {
-            return {
-                tasks: [],
-                params: {
-                    q: '',
-                    filter: 'all',
-                    view: '5',
-                    sort: 'new',
-                    page: '1'
-                },
-                filter: {
-                    all: true,
-                    active: false,
-                    completed: false
-                },
-                pagination: {
-                    prev_url: '',
-                    next_url: '',
-                    path: '',
-                    current_page: '',
-                    last_page: ''
-                }
-            }
-        },
         created() {
             this.fetchTasks()
             eventBus.$on('fetchTasks', (url) => this.fetchTasks(url))
@@ -67,15 +37,15 @@
         },
         methods: {
             fetchTasks(page_url) {
-                page_url = page_url || '/api/tasks?sort=' + this.params.sort
+                page_url = page_url || '/api/tasks?sort=' + this.$store.state.params.sort
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {
                         // if current page request is greater than
                         // the total number of pages
-                        if(this.params.page > res.meta.last_page) {
+                        if(this.$store.state.params.page > res.meta.last_page) {
                             // set current page to last available
-                            this.params.page = res.meta.last_page
+                            this.$store.state.params.page = res.meta.last_page
                             this.fetchTasks(this.buildURL)
                         } else {
                             // set component data
@@ -83,25 +53,25 @@
                                 res.links.prev = res.links.prev.substring(res.links.prev.length -1)
                             if(res.links.next !== null)
                                 res.links.next = res.links.next.substring(res.links.next.length -1)
-                            this.tasks = res.data
-                            this.pagination.prev = res.links.prev
-                            this.pagination.next = res.links.next
-                            this.pagination.path = res.meta.path
-                            this.pagination.current_page = res.meta.current_page
-                            this.pagination.last_page = res.meta.last_page
+                            this.$store.state.tasks = res.data
+                            this.$store.state.pagination.prev = res.links.prev
+                            this.$store.state.pagination.next = res.links.next
+                            this.$store.state.pagination.path = res.meta.path
+                            this.$store.state.pagination.current_page = res.meta.current_page
+                            this.$store.state.pagination.last_page = res.meta.last_page
                         }
                     })
                     .catch(err => console.log(err))
             },
             addParameter(key, value) {
-                this.params[key] = value
+                this.$store.state.params[key] = value
                 this.fetchTasks(this.buildURL)
             },
             toggleFilter() {
-                this.filter.all = false
-                this.filter.active = false
-                this.filter.completed = false
-                this.filter[this.params.filter] = true
+                this.$store.state.filter.all = false
+                this.$store.state.filter.active = false
+                this.$store.state.filter.completed = false
+                this.$store.state.filter[this.$store.state.params.filter] = true
             }
 
         },
@@ -109,9 +79,9 @@
             // build url string from params
             buildURL() {
                 let url = '/api/tasks?'
-                for(const prop in this.params){
-                    if(this.params[prop] !== ''){
-                        url += prop + '=' + this.params[prop] + '&'
+                for(const prop in this.$store.state.params){
+                    if(this.$store.state.params[prop] !== ''){
+                        url += prop + '=' + this.$store.state.params[prop] + '&'
                     }
                 }
                 return url.substring(0, url.length - 1)

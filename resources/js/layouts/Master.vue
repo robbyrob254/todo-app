@@ -23,8 +23,21 @@
                 <div class="navbar-end">
                     <div class="navbar-item">
                         <div class="buttons">
-                            <router-link to="/register" class="button is-primary">Sign up</router-link>
-                            <router-link to="/login" class="button is-light">Log in</router-link>
+                            <router-link class="button is-primary"
+                                to="/register"
+                                v-if="!loggedIn">
+                                Sign up
+                            </router-link>
+                            <router-link class="button is-light"
+                                to="/login"
+                                v-if="!loggedIn">
+                                Log in
+                            </router-link>
+                            <router-link
+                                to="/logout"
+                                v-if="loggedIn">
+                                Logout
+                            </router-link>
                         </div>
                     </div>
                 </div>
@@ -42,7 +55,13 @@
 
 <script>
     export default {
-        name: 'Master'
+        name: 'Master',
+        computed: {
+            loggedIn() {
+                return false
+                //return window.accessToken !== null
+            }
+        }
     }
 </script>
 

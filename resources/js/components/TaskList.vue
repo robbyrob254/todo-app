@@ -1,6 +1,6 @@
 <template>
     <ul class="list">
-        <li v-for="task in tasks" v-bind:key="task.id">
+        <li v-for="task in this.$store.state.tasks" v-bind:key="task.id">
             <task-item v-bind:task="task" />
         </li>
     </ul>
@@ -11,7 +11,6 @@
 
     export default {
         name: 'TaskList',
-        props: ['tasks'],
         components: {
             TaskItem
         }

@@ -4,20 +4,20 @@
         aria-label="pagination"
         v-show="hasPagination()">
         <a class="pagination-previous"
-            :disabled="pagination.prev === null"
-            @click="fetchPage(pagination.prev)">
+            :disabled="$store.state.pagination.prev === null"
+            @click="fetchPage($store.state.pagination.prev)">
             Previous
         </a>
         <a class="pagination-next"
-            :disabled="pagination.next_url === null"
-            @click="fetchPage(pagination.next)">
+            :disabled="$store.state.pagination.next_url === null"
+            @click="fetchPage($store.state.pagination.next)">
             Next page
         </a>
         <ul class="pagination-list">
-            <li v-for="page in pagination.last_page"
+            <li v-for="page in $store.state.pagination.last_page"
                 :key="page">
                 <a class="pagination-link"
-                    :class="{ 'is-current': pagination.current_page === page }"
+                    :class="{ 'is-current': $store.state.pagination.current_page === page }"
                     :aria-label="'Goto page ' + page"
                     @click="fetchPage(page)">
                     {{ page }}
@@ -30,13 +30,12 @@
 <script>
     export default {
         name: "Pagination",
-        props: ['pagination'],
         methods: {
             fetchPage(num) {
                 eventBus.$emit('addParameter', 'page', num)
             },
             hasPagination() {
-                return !(this.pagination.prev === null && this.pagination.next === null)
+                return this.$store.getters.hasPagination
             }
         }
     }
