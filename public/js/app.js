@@ -1950,11 +1950,9 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     fetchPage: function fetchPage(num) {
       eventBus.$emit('addParameter', 'page', num);
-    }
-  },
-  computed: {
+    },
     hasPagination: function hasPagination() {
-      return !(this.pagination.prev_url === null && this.pagination.next_url === null);
+      return !(this.pagination.prev === null && this.pagination.next === null);
     }
   }
 });
@@ -2001,6 +1999,8 @@ __webpack_require__.r(__webpack_exports__);
     searchTasks: function searchTasks() {
       if (this.query.trim() !== '') {
         eventBus.$emit('addParameter', 'q', this.query.trim());
+      } else {
+        eventBus.$emit('addParameter', 'q', '');
       }
     }
   }
@@ -20974,8 +20974,8 @@ var render = function() {
         {
           name: "show",
           rawName: "v-show",
-          value: _vm.hasPagination,
-          expression: "hasPagination"
+          value: _vm.hasPagination(),
+          expression: "hasPagination()"
         }
       ],
       staticClass: "pagination is-centered",

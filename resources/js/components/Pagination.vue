@@ -2,7 +2,7 @@
     <nav class="pagination is-centered"
         role="navigation"
         aria-label="pagination"
-        v-show="hasPagination">
+        v-show="hasPagination()">
         <a class="pagination-previous"
             :disabled="pagination.prev === null"
             @click="fetchPage(pagination.prev)">
@@ -34,11 +34,9 @@
         methods: {
             fetchPage(num) {
                 eventBus.$emit('addParameter', 'page', num)
-            }
-        },
-        computed: {
+            },
             hasPagination() {
-                return !(this.pagination.prev_url === null && this.pagination.next_url === null)
+                return !(this.pagination.prev === null && this.pagination.next === null)
             }
         }
     }

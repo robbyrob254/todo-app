@@ -30,6 +30,8 @@
             searchTasks() {
                 if(this.query.trim() !== '') {
                     eventBus.$emit('addParameter', 'q', this.query.trim())
+                } else {
+                    eventBus.$emit('addParameter', 'q', '')
                 }
             }
         }
