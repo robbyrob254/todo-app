@@ -1780,25 +1780,25 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       page_url = page_url || '/api/tasks?sort=' + this.params.sort;
-      console.log(page_url);
       fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
-        if (res.links.prev !== null) {
-          res.links.prev = res.links.prev.substring(res.links.prev.length - 1);
-        }
+        console.log(_this2.tasks, res.data); // set current page to last available
 
-        if (res.links.next !== null) {
-          res.links.next = res.links.next.substring(res.links.next.length - 1);
-        }
+        if (_this2.params.page > res.meta.last_page) {
+          _this2.params.page = res.meta.last_page;
 
-        _this2.tasks = res.data;
-        _this2.pagination.prev = res.links.prev;
-        _this2.pagination.next = res.links.next;
-        _this2.pagination.path = res.meta.path;
-        _this2.pagination.current_page = res.meta.current_page;
-        _this2.pagination.last_page = res.meta.last_page;
-        console.log(_this2.pagination);
+          _this2.fetchTasks(_this2.buildURL);
+        } else {
+          if (res.links.prev !== null) res.links.prev = res.links.prev.substring(res.links.prev.length - 1);
+          if (res.links.next !== null) res.links.next = res.links.next.substring(res.links.next.length - 1);
+          _this2.tasks = res.data;
+          _this2.pagination.prev = res.links.prev;
+          _this2.pagination.next = res.links.next;
+          _this2.pagination.path = res.meta.path;
+          _this2.pagination.current_page = res.meta.current_page;
+          _this2.pagination.last_page = res.meta.last_page;
+        }
       })["catch"](function (err) {
         return console.log(err);
       });
