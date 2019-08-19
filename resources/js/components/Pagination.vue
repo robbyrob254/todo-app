@@ -4,13 +4,13 @@
         aria-label="pagination"
         v-show="hasPagination">
         <a class="pagination-previous"
-            :disabled="pagination.prev_url === null"
-            @click="fetchByURL(pagination.prev_url)">
+            :disabled="pagination.prev === null"
+            @click="fetchByPageNum(pagination.prev)">
             Previous
         </a>
         <a class="pagination-next"
             :disabled="pagination.next_url === null"
-            @click="fetchByURL(pagination.next_url)">
+            @click="fetchByPageNum(pagination.next)">
             Next page
         </a>
         <ul class="pagination-list">
@@ -32,12 +32,9 @@
         name: "Pagination",
         props: ['pagination'],
         methods: {
-            fetchByURL(url) {
-                eventBus.$emit('fetchTasks', url)
-            },
             fetchByPageNum(page) {
                 let url = this.pagination.path + '?page=' + page
-                eventBus.$emit('fetchTasks', url)
+                eventBus.$emit('addParameter', 'page', page)
             }
         },
         computed: {

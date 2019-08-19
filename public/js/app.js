@@ -1744,7 +1744,8 @@ __webpack_require__.r(__webpack_exports__);
         q: '',
         filter: 'all',
         view: '5',
-        sort: 'new'
+        sort: 'new',
+        page: '1'
       },
       filter: {
         all: true,
@@ -1783,12 +1784,21 @@ __webpack_require__.r(__webpack_exports__);
       fetch(page_url).then(function (res) {
         return res.json();
       }).then(function (res) {
+        if (res.links.prev !== null) {
+          res.links.prev = res.links.prev.substring(res.links.prev.length - 1);
+        }
+
+        if (res.links.next !== null) {
+          res.links.next = res.links.next.substring(res.links.next.length - 1);
+        }
+
         _this2.tasks = res.data;
-        _this2.pagination.prev_url = res.links.prev;
-        _this2.pagination.next_url = res.links.next;
+        _this2.pagination.prev = res.links.prev;
+        _this2.pagination.next = res.links.next;
         _this2.pagination.path = res.meta.path;
         _this2.pagination.current_page = res.meta.current_page;
         _this2.pagination.last_page = res.meta.last_page;
+        console.log(_this2.pagination);
       })["catch"](function (err) {
         return console.log(err);
       });
@@ -1936,12 +1946,9 @@ __webpack_require__.r(__webpack_exports__);
   name: "Pagination",
   props: ['pagination'],
   methods: {
-    fetchByURL: function fetchByURL(url) {
-      eventBus.$emit('fetchTasks', url);
-    },
     fetchByPageNum: function fetchByPageNum(page) {
       var url = this.pagination.path + '?page=' + page;
-      eventBus.$emit('fetchTasks', url);
+      eventBus.$emit('addParameter', 'page', page);
     }
   },
   computed: {
@@ -20942,10 +20949,10 @@ var render = function() {
         "a",
         {
           staticClass: "pagination-previous",
-          attrs: { disabled: _vm.pagination.prev_url === null },
+          attrs: { disabled: _vm.pagination.prev === null },
           on: {
             click: function($event) {
-              return _vm.fetchByURL(_vm.pagination.prev_url)
+              return _vm.fetchByPageNum(_vm.pagination.prev)
             }
           }
         },
@@ -20959,7 +20966,7 @@ var render = function() {
           attrs: { disabled: _vm.pagination.next_url === null },
           on: {
             click: function($event) {
-              return _vm.fetchByURL(_vm.pagination.next_url)
+              return _vm.fetchByPageNum(_vm.pagination.next)
             }
           }
         },

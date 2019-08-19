@@ -42,7 +42,8 @@
                     q: '',
                     filter: 'all',
                     view: '5',
-                    sort: 'new'
+                    sort: 'new',
+                    page: '1'
                 },
                 filter: {
                     all: true,
@@ -71,12 +72,19 @@
                 fetch(page_url)
                     .then(res => res.json())
                     .then(res => {
+                        if(res.links.prev !== null) {
+                            res.links.prev = res.links.prev.substring(res.links.prev.length -1)
+                        }
+                        if(res.links.next !== null) {
+                            res.links.next = res.links.next.substring(res.links.next.length -1)
+                        }
                         this.tasks = res.data
-                        this.pagination.prev_url = res.links.prev
-                        this.pagination.next_url = res.links.next
+                        this.pagination.prev = res.links.prev
+                        this.pagination.next = res.links.next
                         this.pagination.path = res.meta.path
                         this.pagination.current_page = res.meta.current_page
                         this.pagination.last_page = res.meta.last_page
+                        console.log(this.pagination)
                     })
                     .catch(err => console.log(err))
             },
