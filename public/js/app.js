@@ -1732,40 +1732,7 @@ __webpack_require__.r(__webpack_exports__);
     TaskForm: _components_TaskForm_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   created: function created() {
-    var _this = this;
-
-    this.fetchTasks();
-    eventBus.$on('fetchTasks', function () {
-      return _this.fetchTasks();
-    });
-  },
-  methods: {
-    fetchTasks: function fetchTasks() {
-      var _this2 = this;
-
-      fetch(this.$store.getters.path).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        if (_this2.$store.state.params.page > res.meta.last_page) {
-          _this2.$store.state.params.page = res.meta.last_page;
-
-          _this2.fetchTasks();
-        } else {
-          // only need the page number not the whole path
-          if (res.links.prev !== null) res.links.prev = res.links.prev.substring(res.links.prev.length - 1);
-          if (res.links.next !== null) res.links.next = res.links.next.substring(res.links.next.length - 1);
-
-          _this2.$store.commit('updatePagination', {
-            links: res.links,
-            meta: res.meta
-          });
-
-          _this2.$store.commit('updateTasks', res.data);
-        }
-      })["catch"](function (err) {
-        return console.log(err);
-      });
-    }
+    this.$store.dispatch('fetchTasks');
   }
 });
 
@@ -1933,12 +1900,10 @@ __webpack_require__.r(__webpack_exports__);
   name: "Pagination",
   methods: {
     fetchPage: function fetchPage(num) {
-      console.log(num);
-      this.$store.commit('addParameter', {
+      this.$store.dispatch('addParameter', {
         type: 'page',
         value: num
       });
-      eventBus.$emit('fetchTasks');
     }
   }
 });
@@ -2094,25 +2059,22 @@ __webpack_require__.r(__webpack_exports__);
       return this.$store.state.params.filter === filter;
     },
     filterTasks: function filterTasks(filter) {
-      this.$store.commit('addParameter', {
+      this.$store.dispatch('addParameter', {
         type: 'filter',
         value: filter
       });
-      eventBus.$emit('fetchTasks');
     },
     sortTasks: function sortTasks() {
-      this.$store.commit('addParameter', {
+      this.$store.dispatch('addParameter', {
         type: 'sort',
         value: this.sort
       });
-      eventBus.$emit('fetchTasks');
     },
     viewTasks: function viewTasks() {
-      this.$store.commit('addParameter', {
+      this.$store.dispatch('addParameter', {
         type: 'view',
         value: this.view
       });
-      eventBus.$emit('fetchTasks');
     }
   }
 });
@@ -2148,33 +2110,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskForm',
-  data: function data() {
-    return {
-      task: {
-        title: ''
-      }
-    };
-  },
   methods: {
     addTask: function addTask() {
-      var _this = this;
-
-      if (this.task.title.trim() !== '') {
-        this.task.title = this.task.title.trim();
-        fetch('api/task', {
-          method: 'post',
-          headers: {
-            'content-type': 'application/json'
-          },
-          body: JSON.stringify(this.task)
-        }).then(function (res) {
-          return res.json();
-        }).then(function (res) {
-          _this.task.title = '';
-          eventBus.$emit('fetch-tasks');
-        })["catch"](function (err) {
-          return console.log(err);
-        });
+      this.$store.dispatch('addTask');
+    }
+  },
+  computed: {
+    title: {
+      get: function get() {
+        return this.$store.state.title;
+      },
+      set: function set(value) {
+        this.$store.commit('updateTitle', value);
       }
     }
   }
@@ -2211,31 +2158,11 @@ __webpack_require__.r(__webpack_exports__);
   props: ['task'],
   methods: {
     toggleTask: function toggleTask() {
-      fetch('api/task', {
-        method: 'PUT',
-        headers: {
-          'content-type': 'application/json'
-        },
-        body: JSON.stringify(this.task)
-      }).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        eventBus.$emit('fetchTasks');
-      })["catch"](function (err) {
-        return console.log(err);
-      });
+      this.$store.dispatch('toggleTask', this.task);
     },
     deleteTask: function deleteTask() {
       if (confirm("Delete ".concat(this.task.title, "?"))) {
-        fetch("api/task/".concat(this.task.id), {
-          method: 'DELETE'
-        }).then(function (res) {
-          return res.json();
-        }).then(function (res) {
-          eventBus.$emit('fetchTasks');
-        })["catch"](function (err) {
-          return console.log(err);
-        });
+        this.$store.dispatch('deleteTask', this.task.id);
       }
     }
   }
@@ -21419,19 +21346,19 @@ var render = function() {
                 {
                   name: "model",
                   rawName: "v-model",
-                  value: _vm.task.title,
-                  expression: "task.title"
+                  value: _vm.title,
+                  expression: "title"
                 }
               ],
               staticClass: "input",
               attrs: { type: "text", placeholder: "Task name" },
-              domProps: { value: _vm.task.title },
+              domProps: { value: _vm.title },
               on: {
                 input: function($event) {
                   if ($event.target.composing) {
                     return
                   }
-                  _vm.$set(_vm.task, "title", $event.target.value)
+                  _vm.title = $event.target.value
                 }
               }
             })
@@ -38855,6 +38782,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
     token: null,
     tasks: [],
+    title: '',
     params: {
       q: '',
       filter: 'all',
@@ -38894,10 +38822,13 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       }
 
       return path.substring(0, path.length - 1);
+    },
+    title: function title(state) {
+      return state.title;
     }
   },
   mutations: {
-    addParameter: function addParameter(state, param) {
+    updateParameter: function updateParameter(state, param) {
       state.params[param.type] = param.value;
     },
     updatePagination: function updatePagination(state, pagination) {
@@ -38909,11 +38840,104 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     updateTasks: function updateTasks(state, tasks) {
       state.tasks = tasks;
     },
+    updateTitle: function updateTitle(state, title) {
+      state.title = title.trim();
+    },
+    emptyTitle: function emptyTitle(state) {
+      state.title = '';
+    },
     toggleFilter: function toggleFilter(state, filter) {
       state.filter.all = false;
       state.filter.active = false;
       state.filter.completed = false;
       state.filter[filter] = true;
+    }
+  },
+  actions: {
+    addParameter: function addParameter(_ref, param) {
+      var dispatch = _ref.dispatch,
+          commit = _ref.commit;
+
+      // reset to first page for every param except page
+      if (param.type !== 'page') {
+        commit('updateParameter', {
+          type: 'page',
+          value: '1'
+        });
+      }
+
+      commit('updateParameter', {
+        type: param.type,
+        value: param.value
+      });
+      dispatch('fetchTasks');
+    },
+    addTask: function addTask(_ref2) {
+      var commit = _ref2.commit,
+          dispatch = _ref2.dispatch,
+          getters = _ref2.getters;
+      fetch('api/task', {
+        method: 'post',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          title: getters.title
+        })
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        commit('emptyTitle');
+        dispatch('fetchTasks');
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    },
+    deleteTask: function deleteTask(_ref3, id) {
+      var dispatch = _ref3.dispatch;
+      fetch("api/task/".concat(id), {
+        method: 'DELETE'
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        dispatch('fetchTasks');
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    },
+    fetchTasks: function fetchTasks(_ref4) {
+      var commit = _ref4.commit,
+          getters = _ref4.getters;
+      fetch(getters.path).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        // only need the page number not the whole path
+        if (res.links.prev !== null) res.links.prev = res.links.prev.substring(res.links.prev.length - 1);
+        if (res.links.next !== null) res.links.next = res.links.next.substring(res.links.next.length - 1);
+        commit('updatePagination', {
+          links: res.links,
+          meta: res.meta
+        });
+        commit('updateTasks', res.data);
+      })["catch"](function (err) {
+        return console.log(err);
+      });
+    },
+    toggleTask: function toggleTask(_ref5, task) {
+      var dispatch = _ref5.dispatch;
+      fetch('api/task', {
+        method: 'PUT',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(task)
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        dispatch('fetchTasks');
+      })["catch"](function (err) {
+        return console.log(err);
+      });
     }
   }
 });

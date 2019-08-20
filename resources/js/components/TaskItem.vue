@@ -19,29 +19,11 @@
         props: ['task'],
         methods: {
             toggleTask() {
-                fetch('api/task', {
-                    method: 'PUT',
-                    headers: {
-                            'content-type': 'application/json'
-                        },
-                    body: JSON.stringify(this.task)
-                })
-                .then(res => res.json())
-                .then(res => {
-                    eventBus.$emit('fetchTasks')
-                })
-                .catch(err => console.log(err))
+                this.$store.dispatch('toggleTask', this.task)
             },
             deleteTask() {
                 if(confirm(`Delete ${this.task.title}?`)) {
-                    fetch(`api/task/${this.task.id}`, {
-                        method: 'DELETE'
-                    })
-                    .then(res => res.json())
-                    .then(res => {
-                        eventBus.$emit('fetchTasks')
-                    })
-                    .catch(err => console.log(err))
+                    this.$store.dispatch('deleteTask', this.task.id)
                 }
             },
         }

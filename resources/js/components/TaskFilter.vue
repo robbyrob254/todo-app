@@ -90,25 +90,22 @@
                 return this.$store.state.params.filter === filter
             },
             filterTasks(filter) {
-                this.$store.commit('addParameter', {
+                this.$store.dispatch('addParameter', {
                     type: 'filter',
                     value: filter
                 })
-                eventBus.$emit('fetchTasks')
             },
             sortTasks() {
-                this.$store.commit('addParameter', {
+                this.$store.dispatch('addParameter', {
                     type: 'sort',
                     value: this.sort
                 })
-                eventBus.$emit('fetchTasks')
             },
             viewTasks() {
-                this.$store.commit('addParameter', {
+                this.$store.dispatch('addParameter', {
                     type: 'view',
                     value: this.view
                 })
-                eventBus.$emit('fetchTasks')
             }
         }
     }

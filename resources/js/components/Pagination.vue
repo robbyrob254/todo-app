@@ -32,12 +32,10 @@
         name: "Pagination",
         methods: {
             fetchPage(num) {
-                console.log(num)
-                this.$store.commit('addParameter', {
+                this.$store.dispatch('addParameter', {
                     type: 'page',
                     value: num
                 })
-                eventBus.$emit('fetchTasks')
             },
         }
 
