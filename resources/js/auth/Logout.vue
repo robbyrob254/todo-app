@@ -1,7 +1,5 @@
 <template>
-    <form @submit.prevent="">
-        <button class="button is-primary" type="submit">Logout</button>
-    </form>
+
 </template>
 
 <script>

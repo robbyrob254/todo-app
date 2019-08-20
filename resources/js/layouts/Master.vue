@@ -25,17 +25,17 @@
                         <div class="buttons">
                             <router-link class="button is-primary"
                                 to="/register"
-                                v-if="!loggedIn">
+                                v-if="!$store.getters.loggedIn">
                                 Sign up
                             </router-link>
                             <router-link class="button is-light"
                                 to="/login"
-                                v-if="!loggedIn">
+                                v-if="!$store.getters.loggedIn">
                                 Log in
                             </router-link>
                             <router-link
                                 to="/logout"
-                                v-if="loggedIn">
+                                v-if="$store.getters.loggedIn">
                                 Logout
                             </router-link>
                         </div>
@@ -55,13 +55,7 @@
 
 <script>
     export default {
-        name: 'Master',
-        computed: {
-            loggedIn() {
-                return false
-                //return window.accessToken !== null
-            }
-        }
+        name: 'Master'
     }
 </script>
 

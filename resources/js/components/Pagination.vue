@@ -2,22 +2,22 @@
     <nav class="pagination is-centered"
         role="navigation"
         aria-label="pagination"
-        v-show="hasPagination()">
+        v-show="!$store.getters.hasPagination">
         <a class="pagination-previous"
             :disabled="$store.state.pagination.prev === null"
             @click="fetchPage($store.state.pagination.prev)">
             Previous
         </a>
         <a class="pagination-next"
-            :disabled="$store.state.pagination.next_url === null"
+            :disabled="$store.state.pagination.next === null"
             @click="fetchPage($store.state.pagination.next)">
             Next page
         </a>
         <ul class="pagination-list">
-            <li v-for="page in $store.state.pagination.last_page"
+            <li v-for="page in $store.state.pagination.last"
                 :key="page">
                 <a class="pagination-link"
-                    :class="{ 'is-current': $store.state.pagination.current_page === page }"
+                    :class="{ 'is-current': $store.state.pagination.current === page }"
                     :aria-label="'Goto page ' + page"
                     @click="fetchPage(page)">
                     {{ page }}
@@ -32,12 +32,15 @@
         name: "Pagination",
         methods: {
             fetchPage(num) {
-                eventBus.$emit('addParameter', 'page', num)
+                console.log(num)
+                this.$store.commit('addParameter', {
+                    type: 'page',
+                    value: num
+                })
+                eventBus.$emit('fetchTasks')
             },
-            hasPagination() {
-                return this.$store.getters.hasPagination
-            }
         }
+
     }
 </script>
 

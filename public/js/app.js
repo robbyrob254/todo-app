@@ -1735,69 +1735,36 @@ __webpack_require__.r(__webpack_exports__);
     var _this = this;
 
     this.fetchTasks();
-    eventBus.$on('fetchTasks', function (url) {
-      return _this.fetchTasks(url);
-    });
-    eventBus.$on('toggleFilter', function () {
-      return _this.toggleFilter();
-    });
-    eventBus.$on('addParameter', function (key, value) {
-      return _this.addParameter(key, value);
+    eventBus.$on('fetchTasks', function () {
+      return _this.fetchTasks();
     });
   },
   methods: {
-    fetchTasks: function fetchTasks(page_url) {
+    fetchTasks: function fetchTasks() {
       var _this2 = this;
 
-      page_url = page_url || '/api/tasks?sort=' + this.$store.state.params.sort;
-      fetch(page_url).then(function (res) {
+      fetch(this.$store.getters.path).then(function (res) {
         return res.json();
       }).then(function (res) {
-        // if current page request is greater than
-        // the total number of pages
         if (_this2.$store.state.params.page > res.meta.last_page) {
-          // set current page to last available
           _this2.$store.state.params.page = res.meta.last_page;
 
-          _this2.fetchTasks(_this2.buildURL);
+          _this2.fetchTasks();
         } else {
-          // set component data
+          // only need the page number not the whole path
           if (res.links.prev !== null) res.links.prev = res.links.prev.substring(res.links.prev.length - 1);
           if (res.links.next !== null) res.links.next = res.links.next.substring(res.links.next.length - 1);
-          _this2.$store.state.tasks = res.data;
-          _this2.$store.state.pagination.prev = res.links.prev;
-          _this2.$store.state.pagination.next = res.links.next;
-          _this2.$store.state.pagination.path = res.meta.path;
-          _this2.$store.state.pagination.current_page = res.meta.current_page;
-          _this2.$store.state.pagination.last_page = res.meta.last_page;
+
+          _this2.$store.commit('updatePagination', {
+            links: res.links,
+            meta: res.meta
+          });
+
+          _this2.$store.commit('updateTasks', res.data);
         }
       })["catch"](function (err) {
         return console.log(err);
       });
-    },
-    addParameter: function addParameter(key, value) {
-      this.$store.state.params[key] = value;
-      this.fetchTasks(this.buildURL);
-    },
-    toggleFilter: function toggleFilter() {
-      this.$store.state.filter.all = false;
-      this.$store.state.filter.active = false;
-      this.$store.state.filter.completed = false;
-      this.$store.state.filter[this.$store.state.params.filter] = true;
-    }
-  },
-  computed: {
-    // build url string from params
-    buildURL: function buildURL() {
-      var url = '/api/tasks?';
-
-      for (var prop in this.$store.state.params) {
-        if (this.$store.state.params[prop] !== '') {
-          url += prop + '=' + this.$store.state.params[prop] + '&';
-        }
-      }
-
-      return url.substring(0, url.length - 1);
     }
   }
 });
@@ -1893,8 +1860,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Logout',
   created: function created() {
@@ -1968,10 +1933,12 @@ __webpack_require__.r(__webpack_exports__);
   name: "Pagination",
   methods: {
     fetchPage: function fetchPage(num) {
-      eventBus.$emit('addParameter', 'page', num);
-    },
-    hasPagination: function hasPagination() {
-      return this.$store.getters.hasPagination;
+      console.log(num);
+      this.$store.commit('addParameter', {
+        type: 'page',
+        value: num
+      });
+      eventBus.$emit('fetchTasks');
     }
   }
 });
@@ -2016,7 +1983,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     searchTasks: function searchTasks() {
-      eventBus.$emit('addParameter', 'q', this.query.trim());
+      this.$store.commit('addParameter', {
+        type: 'q',
+        value: this.query.trim()
+      });
+      eventBus.$emit('fetchTasks');
     }
   }
 });
@@ -2119,15 +2090,29 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    filterTasks: function filterTasks(option) {
-      eventBus.$emit('addParameter', 'filter', option);
-      eventBus.$emit('toggleFilter');
+    hasFilter: function hasFilter(filter) {
+      return this.$store.state.params.filter === filter;
+    },
+    filterTasks: function filterTasks(filter) {
+      this.$store.commit('addParameter', {
+        type: 'filter',
+        value: filter
+      });
+      eventBus.$emit('fetchTasks');
     },
     sortTasks: function sortTasks() {
-      eventBus.$emit('addParameter', 'sort', this.sort);
+      this.$store.commit('addParameter', {
+        type: 'sort',
+        value: this.sort
+      });
+      eventBus.$emit('fetchTasks');
     },
     viewTasks: function viewTasks() {
-      eventBus.$emit('addParameter', 'view', this.view);
+      this.$store.commit('addParameter', {
+        type: 'view',
+        value: this.view
+      });
+      eventBus.$emit('fetchTasks');
     }
   }
 });
@@ -2351,12 +2336,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'Master',
-  computed: {
-    loggedIn: function loggedIn() {
-      return false; //return window.accessToken !== null
-    }
-  }
+  name: 'Master'
 });
 
 /***/ }),
@@ -20908,23 +20888,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "form",
-    {
-      on: {
-        submit: function($event) {
-          $event.preventDefault()
-        }
-      }
-    },
-    [
-      _c(
-        "button",
-        { staticClass: "button is-primary", attrs: { type: "submit" } },
-        [_vm._v("Logout")]
-      )
-    ]
-  )
+  return _c("div")
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -21037,8 +21001,8 @@ var render = function() {
         {
           name: "show",
           rawName: "v-show",
-          value: _vm.hasPagination(),
-          expression: "hasPagination()"
+          value: !_vm.$store.getters.hasPagination,
+          expression: "!$store.getters.hasPagination"
         }
       ],
       staticClass: "pagination is-centered",
@@ -21063,7 +21027,7 @@ var render = function() {
         "a",
         {
           staticClass: "pagination-next",
-          attrs: { disabled: _vm.$store.state.pagination.next_url === null },
+          attrs: { disabled: _vm.$store.state.pagination.next === null },
           on: {
             click: function($event) {
               return _vm.fetchPage(_vm.$store.state.pagination.next)
@@ -21076,15 +21040,14 @@ var render = function() {
       _c(
         "ul",
         { staticClass: "pagination-list" },
-        _vm._l(_vm.$store.state.pagination.last_page, function(page) {
+        _vm._l(_vm.$store.state.pagination.last, function(page) {
           return _c("li", { key: page }, [
             _c(
               "a",
               {
                 staticClass: "pagination-link",
                 class: {
-                  "is-current":
-                    _vm.$store.state.pagination.current_page === page
+                  "is-current": _vm.$store.state.pagination.current === page
                 },
                 attrs: { "aria-label": "Goto page " + page },
                 on: {
@@ -21225,7 +21188,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "button",
-                      class: { "is-focused": _vm.$store.state.filter.all },
+                      class: { "is-focused": _vm.hasFilter("all") },
                       on: {
                         click: function($event) {
                           return _vm.filterTasks("all")
@@ -21245,7 +21208,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "button",
-                      class: { "is-focused": _vm.$store.state.filter.active },
+                      class: { "is-focused": _vm.hasFilter("active") },
                       on: {
                         click: function($event) {
                           return _vm.filterTasks("active")
@@ -21265,9 +21228,7 @@ var render = function() {
                     "button",
                     {
                       staticClass: "button",
-                      class: {
-                        "is-focused": _vm.$store.state.filter.completed
-                      },
+                      class: { "is-focused": _vm.hasFilter("completed") },
                       on: {
                         click: function($event) {
                           return _vm.filterTasks("completed")
@@ -21639,7 +21600,7 @@ var render = function() {
                   "div",
                   { staticClass: "buttons" },
                   [
-                    !_vm.loggedIn
+                    !_vm.$store.getters.loggedIn
                       ? _c(
                           "router-link",
                           {
@@ -21654,7 +21615,7 @@ var render = function() {
                         )
                       : _vm._e(),
                     _vm._v(" "),
-                    !_vm.loggedIn
+                    !_vm.$store.getters.loggedIn
                       ? _c(
                           "router-link",
                           {
@@ -21669,7 +21630,7 @@ var render = function() {
                         )
                       : _vm._e(),
                     _vm._v(" "),
-                    _vm.loggedIn
+                    _vm.$store.getters.loggedIn
                       ? _c("router-link", { attrs: { to: "/logout" } }, [
                           _vm._v(
                             "\n                            Logout\n                        "
@@ -38892,6 +38853,7 @@ __webpack_require__.r(__webpack_exports__);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: {
+    token: null,
     tasks: [],
     params: {
       q: '',
@@ -38906,16 +38868,52 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       completed: false
     },
     pagination: {
+      current: '',
       prev: '',
       next: '',
-      path: '',
-      current_page: '',
-      last_page: ''
+      last: ''
     }
   },
   getters: {
     hasPagination: function hasPagination(state) {
-      return !(state.pagination.prev === null && state.pagination.next === null);
+      return state.pagination.prev === null && state.pagination.next === null;
+    },
+    loggedIn: function loggedIn(state) {
+      return state.token;
+    },
+    page: function page(state) {
+      return state.params.page;
+    },
+    path: function path(state) {
+      var path = '/api/tasks?';
+
+      for (var prop in state.params) {
+        if (state.params[prop] !== '') {
+          path += prop + '=' + state.params[prop] + '&';
+        }
+      }
+
+      return path.substring(0, path.length - 1);
+    }
+  },
+  mutations: {
+    addParameter: function addParameter(state, param) {
+      state.params[param.type] = param.value;
+    },
+    updatePagination: function updatePagination(state, pagination) {
+      state.pagination.current = pagination.meta.current_page;
+      state.pagination.prev = pagination.links.prev;
+      state.pagination.next = pagination.links.next;
+      state.pagination.last = pagination.meta.last_page;
+    },
+    updateTasks: function updateTasks(state, tasks) {
+      state.tasks = tasks;
+    },
+    toggleFilter: function toggleFilter(state, filter) {
+      state.filter.all = false;
+      state.filter.active = false;
+      state.filter.completed = false;
+      state.filter[filter] = true;
     }
   }
 });

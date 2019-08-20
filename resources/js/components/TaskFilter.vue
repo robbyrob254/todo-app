@@ -14,21 +14,21 @@
                         <div class="field is-grouped">
                             <div class="control">
                                 <button class="button"
-                                    :class="{'is-focused': $store.state.filter.all}"
+                                    :class="{'is-focused': hasFilter('all')}"
                                     @click="filterTasks('all')">
                                     All
                                 </button>
                             </div>
                             <div class="control">
                                 <button class="button"
-                                    :class="{'is-focused': $store.state.filter.active}"
+                                    :class="{'is-focused': hasFilter('active')}"
                                     @click="filterTasks('active')">
                                     Active
                                 </button>
                             </div>
                             <div class="control">
                                 <button class="button"
-                                    :class="{'is-focused': $store.state.filter.completed}"
+                                    :class="{'is-focused': hasFilter('completed')}"
                                     @click="filterTasks('completed')">
                                     Completed
                                 </button>
@@ -86,15 +86,29 @@
             }
         },
         methods: {
-            filterTasks(option) {
-                eventBus.$emit('addParameter', 'filter', option)
-                eventBus.$emit('toggleFilter')
+            hasFilter(filter) {
+                return this.$store.state.params.filter === filter
+            },
+            filterTasks(filter) {
+                this.$store.commit('addParameter', {
+                    type: 'filter',
+                    value: filter
+                })
+                eventBus.$emit('fetchTasks')
             },
             sortTasks() {
-                eventBus.$emit('addParameter', 'sort', this.sort)
+                this.$store.commit('addParameter', {
+                    type: 'sort',
+                    value: this.sort
+                })
+                eventBus.$emit('fetchTasks')
             },
             viewTasks() {
-                eventBus.$emit('addParameter', 'view', this.view)
+                this.$store.commit('addParameter', {
+                    type: 'view',
+                    value: this.view
+                })
+                eventBus.$emit('fetchTasks')
             }
         }
     }
