@@ -87,7 +87,7 @@
         },
         methods: {
             hasFilter(filter) {
-                return this.$store.state.params.filter === filter
+                return this.$store.getters.filter === filter
             },
             filterTasks(filter) {
                 this.$store.dispatch('addParameter', {

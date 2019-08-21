@@ -55,7 +55,12 @@
 
 <script>
     export default {
-        name: 'Master'
+        name: 'Master',
+        created() {
+            let token = localStorage.getItem('access_token') || null
+            console.log(token)
+            this.$store.commit('updateToken', token)
+        }
     }
 </script>
 

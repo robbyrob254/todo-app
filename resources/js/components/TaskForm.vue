@@ -19,20 +19,15 @@
 <script>
     export default {
         name: 'TaskForm',
-
-        methods: {
-            addTask() {
-                this.$store.dispatch('addTask')
+        data() {
+            return {
+                title: ''
             }
         },
-        computed: {
-            title: {
-                get() {
-                    return this.$store.state.title
-                },
-                set(value) {
-                    this.$store.commit('updateTitle', value)
-                }
+        methods: {
+            addTask() {
+                this.$store.dispatch('addTask', this.title)
+                this.title = ''
             }
         }
     }

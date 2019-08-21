@@ -1,10 +1,10 @@
 <template>
     <div class="box">
         <strong>Register</strong>
-        <form>
+        <form @submit.prevent="register">
             <div class="field">
                 <p class="control has-icons-left">
-                    <input class="input" type="text" placeholder="Name">
+                    <input class="input" type="text" placeholder="Name" v-model="credentials.name">
                     <span class="icon is-small is-left">
                         <i class="fas fa-user"></i>
                     </span>
@@ -12,7 +12,7 @@
             </div>
             <div class="field">
                 <p class="control has-icons-left">
-                    <input class="input" type="email" placeholder="Email">
+                    <input class="input" type="email" placeholder="Email" v-model="credentials.email">
                     <span class="icon is-small is-left">
                         <i class="fas fa-envelope"></i>
                     </span>
@@ -20,7 +20,15 @@
             </div>
             <div class="field">
                 <p class="control has-icons-left">
-                    <input class="input" type="password" placeholder="Password">
+                    <input class="input" type="password" placeholder="Password" v-model="credentials.password">
+                    <span class="icon is-small is-left">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                </p>
+            </div>
+            <div class="field">
+                <p class="control has-icons-left">
+                    <input class="input" type="password" placeholder="Password" v-model="credentials.password_confirmation">
                     <span class="icon is-small is-left">
                         <i class="fas fa-lock"></i>
                     </span>
@@ -36,3 +44,28 @@
         </form>
     </div>
 </template>
+
+<script>
+    export default {
+        name: 'Register',
+        data() {
+            return {
+                credentials: {
+                    name: '',
+                    email: '',
+                    password: '',
+                    password_confirmation: ''
+                }
+            }
+        },
+        methods: {
+            register() {
+                this.$store.dispatch('register', this.credentials)
+                .then(res => {
+                    this.$router.push('/todo')
+                })
+                .catch(err => console.log(err))
+            }
+        }
+    }
+</script>

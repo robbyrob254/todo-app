@@ -40,19 +40,11 @@
         },
         methods: {
             login() {
-                fetch('/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: this.username,
-                        password: this.password
-                    })
+                this.$store.dispatch('login', {
+                    username: this.username,
+                    password: this.password
                 })
-                .then(res => res.json())
                 .then(res => {
-                    localStorage.setItem('access_token', res.access_token)
                     this.$router.push('/todo')
                 })
                 .catch(err => console.log(err))

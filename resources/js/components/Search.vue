@@ -28,11 +28,11 @@
         },
         methods: {
             searchTasks() {
-                this.$store.commit('addParameter', {
+                this.$store.dispatch('addParameter', {
                     type: 'q',
                     value: this.query.trim()
                 })
-                eventBus.$emit('fetchTasks')
+                this.$store.dispatch('fetchTasks')
             }
         }
     }

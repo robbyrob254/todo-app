@@ -7,7 +7,6 @@ export const store = new Vuex.Store({
     state: {
         token: null,
         tasks: [],
-        title: '',
         params: {
             q: '',
             filter: 'all',
@@ -28,6 +27,9 @@ export const store = new Vuex.Store({
         }
     },
     getters: {
+        filter(state) {
+            return state.params.filter
+        },
         hasPagination(state) {
             return state.pagination.prev === null && state.pagination.next === null
         },
@@ -66,8 +68,8 @@ export const store = new Vuex.Store({
         updateTitle(state, title) {
             state.title = title.trim()
         },
-        emptyTitle(state) {
-            state.title = ''
+        updateToken(state, token) {
+            state.token = token
         },
         toggleFilter(state, filter) {
             state.filter.all = false
@@ -93,19 +95,18 @@ export const store = new Vuex.Store({
 
             dispatch('fetchTasks')
         },
-        addTask({commit, dispatch, getters}) {
+        addTask({commit, dispatch}, title) {
             fetch('api/task', {
                     method: 'post',
                     headers: {
                         'content-type': 'application/json'
                     },
                     body: JSON.stringify({
-                        title: getters.title
+                        title: title
                     })
                 })
                 .then(res => res.json())
                 .then(res => {
-                    commit('emptyTitle')
                     dispatch('fetchTasks')
                 })
                 .catch(err => console.log(err))
@@ -137,6 +138,83 @@ export const store = new Vuex.Store({
                     commit('updateTasks', res.data)
                 })
                 .catch(err => console.log(err))
+        },
+        login({commit}, credentials) {
+            return new Promise((resolve, reject) => {
+                fetch('/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: credentials.username,
+                        password: credentials.password
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    localStorage.setItem('access_token', res.access_token)
+                    commit('updateToken', res.access_token)
+                    resolve(res)
+                })
+                .catch(err => {
+                    console.log(err)
+                    reject(err)
+                })
+            })
+        },
+        logout({commit, getters}) {
+            return new Promise((resolve, reject) => {
+                fetch('/api/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + getters.loggedIn
+                    }
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if(window.accessToken !== null) {
+                        localStorage.removeItem('access_token')
+                        commit('updateToken', null)
+                    }
+                    resolve(res)
+                })
+                .catch(err => {
+                    console.log(err)
+                    if(window.accessToken !== null) {
+                        localStorage.removeItem('access_token')
+                        commit('updateToken', null)
+                    }
+                    reject(res)
+                })
+            })
+        },
+        register({dispatch}, credentials) {
+            return new Promise((resolve, reject) => {
+                fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                })
+                .then(res => res.json())
+                .then(res => {
+                    return dispatch('login', {
+                        username: credentials.email,
+                        password: credentials.password
+                    })
+                })
+                .then(res => {
+                    resolve(res)
+                })
+                .catch(err => {
+                    console.log(err)
+                    reject(err)
+                })
+            })
         },
         toggleTask({dispatch}, task) {
             fetch('api/task', {
