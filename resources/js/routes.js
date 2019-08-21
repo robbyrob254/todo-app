@@ -6,12 +6,39 @@ import Logout from './auth/Logout.vue';
 import App from './App.vue';
 
 const routes = [
-    { path: '/', component: Welcome },
-    { path: '/about', component: About },
-    { path: '/register', component: Register },
-    { path: '/login', component: Login },
-    { path: '/logout', component: Logout },
-    { path: '/todo', component: App },
+    {
+        path: '/',
+        component: Welcome
+    },
+    {
+        path: '/about',
+        component: About
+    },
+    {
+        path: '/register',
+        component: Register,
+        meta: {
+            requiresVisitor: true,
+        }
+    },
+    {
+        path: '/login',
+        component: Login,
+        meta: {
+            requiresVisitor: true,
+        }
+    },
+    {
+        path: '/logout',
+        component: Logout
+    },
+    {
+        path: '/todo',
+        component: App,
+        meta: {
+            requiresAuth: true,
+        }
+    },
 ]
 
 export default routes

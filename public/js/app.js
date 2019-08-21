@@ -2313,11 +2313,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Master',
   created: function created() {
     var token = localStorage.getItem('access_token') || null;
-    console.log(token);
     this.$store.commit('updateToken', token);
   }
 });
@@ -21688,11 +21691,13 @@ var render = function() {
                   [_vm._v("About")]
                 ),
                 _vm._v(" "),
-                _c(
-                  "router-link",
-                  { staticClass: "navbar-item", attrs: { to: "/todo" } },
-                  [_vm._v("App")]
-                )
+                _vm.$store.getters.loggedIn
+                  ? _c(
+                      "router-link",
+                      { staticClass: "navbar-item", attrs: { to: "/todo" } },
+                      [_vm._v("\n                    App\n                ")]
+                    )
+                  : _vm._e()
               ],
               1
             ),
@@ -37976,6 +37981,31 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   routes: _routes__WEBPACK_IMPORTED_MODULE_3__["default"]
 });
+router.beforeEach(function (to, from, next) {
+  if (to.matched.some(function (record) {
+    return record.meta.requiresAuth;
+  })) {
+    if (!_store_index_js__WEBPACK_IMPORTED_MODULE_1__["store"].getters.loggedIn) {
+      next({
+        path: '/login'
+      });
+    } else {
+      next();
+    }
+  } else if (to.matched.some(function (record) {
+    return record.meta.requiresVisitor;
+  })) {
+    if (_store_index_js__WEBPACK_IMPORTED_MODULE_1__["store"].getters.loggedIn) {
+      next({
+        path: '/todo'
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   store: _store_index_js__WEBPACK_IMPORTED_MODULE_1__["store"],
@@ -38817,16 +38847,25 @@ var routes = [{
   component: _static_About_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
 }, {
   path: '/register',
-  component: _auth_Register_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  component: _auth_Register_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
+  meta: {
+    requiresVisitor: true
+  }
 }, {
   path: '/login',
-  component: _auth_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
+  component: _auth_Login_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+  meta: {
+    requiresVisitor: true
+  }
 }, {
   path: '/logout',
   component: _auth_Logout_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
 }, {
   path: '/todo',
-  component: _App_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+  component: _App_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
+  meta: {
+    requiresAuth: true
+  }
 }];
 /* harmony default export */ __webpack_exports__["default"] = (routes);
 

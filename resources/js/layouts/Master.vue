@@ -17,7 +17,11 @@
                 <div class="navbar-start">
                     <router-link to="/" class="navbar-item">Home</router-link>
                     <router-link to="/about" class="navbar-item">About</router-link>
-                    <router-link to="/todo" class="navbar-item">App</router-link>
+                    <router-link class="navbar-item"
+                        to="/todo"
+                        v-if="$store.getters.loggedIn">
+                        App
+                    </router-link>
                 </div>
 
                 <div class="navbar-end">
@@ -58,7 +62,6 @@
         name: 'Master',
         created() {
             let token = localStorage.getItem('access_token') || null
-            console.log(token)
             this.$store.commit('updateToken', token)
         }
     }

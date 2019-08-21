@@ -21,6 +21,28 @@ const router = new VueRouter({
     routes
 });
 
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        if (!store.getters.loggedIn) {
+            next({
+                path: '/login'
+            })
+        } else {
+            next()
+        }
+    } else if (to.matched.some(record => record.meta.requiresVisitor)) {
+        if (store.getters.loggedIn) {
+            next({
+                path: '/todo'
+            })
+        } else {
+                next()
+        }
+    } else {
+        next()
+    }
+})
+
 const app = new Vue({
     el: '#app',
     store: store,
