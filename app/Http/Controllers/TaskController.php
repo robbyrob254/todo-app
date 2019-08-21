@@ -75,10 +75,11 @@ class TaskController extends Controller
             'completed' => 'required|boolean'
         ]);
 
-        $task->update($data);
+        $task->completed = !$task->completed;
 
-        return response($task, 200);
-
+        if($task->save()) {
+            return response($task, 200);
+        }
     }
 
     /**

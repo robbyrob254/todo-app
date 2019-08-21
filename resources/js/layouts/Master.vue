@@ -78,10 +78,6 @@
                 showDropdown: false
             }
         },
-        created() {
-            let token = localStorage.getItem('access_token') || null
-            this.$store.commit('updateToken', token)
-        },
         methods: {
             toggleDropdown() {
                 this.showDropdown = !this.showDropdown

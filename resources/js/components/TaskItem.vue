@@ -46,6 +46,7 @@
 
             },
             toggleTask() {
+                console.log(this.task)
                 this.$store.dispatch('toggleTask', this.task)
             },
             deleteTask() {

@@ -2277,6 +2277,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     editTask: function editTask() {},
     toggleTask: function toggleTask() {
+      console.log(this.task);
       this.$store.dispatch('toggleTask', this.task);
     },
     deleteTask: function deleteTask() {
@@ -2404,10 +2405,6 @@ __webpack_require__.r(__webpack_exports__);
     return {
       showDropdown: false
     };
-  },
-  created: function created() {
-    var token = localStorage.getItem('access_token') || null;
-    this.$store.commit('updateToken', token);
   },
   methods: {
     toggleDropdown: function toggleDropdown() {
@@ -38188,6 +38185,8 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 window.eventBus = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('Master', __webpack_require__(/*! ./layouts/Master.vue */ "./resources/js/layouts/Master.vue")["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]);
+var token = localStorage.getItem('access_token') || null;
+_store_index_js__WEBPACK_IMPORTED_MODULE_1__["store"].commit('updateToken', token);
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
   routes: _routes__WEBPACK_IMPORTED_MODULE_3__["default"]
 });
@@ -39320,7 +39319,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       fetch('api/task', {
         method: 'post',
         headers: {
-          'content-type': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer ' + getters.loggedIn
         },
         body: JSON.stringify({
@@ -39341,6 +39341,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer ' + getters.loggedIn
         }
       }).then(function (res) {
@@ -39356,6 +39357,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
           getters = _ref4.getters;
       fetch(getters.path, {
         headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer ' + getters.loggedIn
         }
       }).then(function (res) {
@@ -39463,10 +39466,11 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     toggleTask: function toggleTask(_ref8, task) {
       var getters = _ref8.getters,
           dispatch = _ref8.dispatch;
-      fetch('api/task', {
+      fetch("api/task/".concat(task.id), {
         method: 'PUT',
         headers: {
-          'content-type': 'application/json',
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer ' + getters.loggedIn
         },
         body: JSON.stringify(task)

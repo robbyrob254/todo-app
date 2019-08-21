@@ -16,6 +16,8 @@ window.eventBus = new Vue();
 Vue.component('Master', require('./layouts/Master.vue').default);
 Vue.use(VueRouter);
 
+let token = localStorage.getItem('access_token') || null
+store.commit('updateToken', token)
 
 const router = new VueRouter({
     routes

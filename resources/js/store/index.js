@@ -114,7 +114,8 @@ export const store = new Vuex.Store({
             fetch('api/task', {
                     method: 'post',
                     headers: {
-                        'content-type': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'Authorization': 'Bearer ' + getters.loggedIn
                     },
                     body: JSON.stringify({
@@ -132,6 +133,7 @@ export const store = new Vuex.Store({
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'Authorization': 'Bearer ' + getters.loggedIn
                     }
                 })
@@ -144,6 +146,8 @@ export const store = new Vuex.Store({
         fetchTasks({commit, getters}) {
             fetch(getters.path, {
                 headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'Authorization': 'Bearer ' + getters.loggedIn
                 }
             })
@@ -244,10 +248,11 @@ export const store = new Vuex.Store({
             })
         },
         toggleTask({getters, dispatch}, task) {
-            fetch('api/task', {
+            fetch(`api/task/${task.id}`, {
                 method: 'PUT',
                 headers: {
-                        'content-type': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
                         'Authorization': 'Bearer ' + getters.loggedIn
                     },
                 body: JSON.stringify(task)
