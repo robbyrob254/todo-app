@@ -39061,6 +39061,20 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     }
   },
   mutations: {
+    logout: function logout(state) {
+      state.tasks = [], state.params.q = '';
+      state.params.filter = 'all';
+      state.params.view = '5';
+      state.params.sort = 'new';
+      state.params.page = '1';
+      state.filter.all = true;
+      state.filter.active = false;
+      state.filter.completed = false;
+      state.pagination.current = '';
+      state.pagination.prev = '';
+      state.pagination.next = '';
+      state.pagination.last = '';
+    },
     updateParameter: function updateParameter(state, param) {
       state.params[param.type] = param.value;
     },
@@ -39106,12 +39120,13 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       dispatch('fetchTasks');
     },
     addTask: function addTask(_ref2, title) {
-      var commit = _ref2.commit,
+      var getters = _ref2.getters,
           dispatch = _ref2.dispatch;
       fetch('api/task', {
         method: 'post',
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ' + getters.loggedIn
         },
         body: JSON.stringify({
           title: title
@@ -39125,9 +39140,14 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       });
     },
     deleteTask: function deleteTask(_ref3, id) {
-      var dispatch = _ref3.dispatch;
+      var getters = _ref3.getters,
+          dispatch = _ref3.dispatch;
       fetch("api/task/".concat(id), {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getters.loggedIn
+        }
       }).then(function (res) {
         return res.json();
       }).then(function (res) {
@@ -39139,7 +39159,11 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     fetchTasks: function fetchTasks(_ref4) {
       var commit = _ref4.commit,
           getters = _ref4.getters;
-      fetch(getters.path).then(function (res) {
+      fetch(getters.path, {
+        headers: {
+          'Authorization': 'Bearer ' + getters.loggedIn
+        }
+      }).then(function (res) {
         return res.json();
       }).then(function (res) {
         // only need the page number not the whole path
@@ -39171,6 +39195,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         }).then(function (res) {
           localStorage.setItem('access_token', res.access_token);
           commit('updateToken', res.access_token);
+          commit('logout');
           resolve(res);
         })["catch"](function (err) {
           console.log(err);
@@ -39235,11 +39260,13 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       });
     },
     toggleTask: function toggleTask(_ref8, task) {
-      var dispatch = _ref8.dispatch;
+      var getters = _ref8.getters,
+          dispatch = _ref8.dispatch;
       fetch('api/task', {
         method: 'PUT',
         headers: {
-          'content-type': 'application/json'
+          'content-type': 'application/json',
+          'Authorization': 'Bearer ' + getters.loggedIn
         },
         body: JSON.stringify(task)
       }).then(function (res) {

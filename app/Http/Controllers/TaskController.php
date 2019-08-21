@@ -17,6 +17,8 @@ class TaskController extends Controller
     {
         $q = Task::query();
 
+        $q->where('user_id', auth()->user()->id);
+
         if($request->q) {
             $q->where('title', 'like', '%'.$request->q.'%');
         }
@@ -48,23 +50,11 @@ class TaskController extends Controller
     {
         $task = new Task;
         $task->title = $request->title;
+        $task->user_id = auth()->user()->id;
 
         if($task->save()){
             return new TaskResource($task);
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $task = Task::findOrFail($id);
-
-        return new TaskResource($task);
     }
 
     /**
@@ -74,14 +64,21 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, Task $task)
     {
-        $task = Task::findOrFail($request->id);
-        $task->completed = !$task->completed;
-
-        if($task->save()) {
-            return new TaskResource($task);
+        if($task->user_id !== auth()->user()->id) {
+            return response()->json('Unauthoirzed', 401);
         }
+
+        $data = $request->validate([
+            'title' => 'required|string',
+            'completed' => 'required|boolean'
+        ]);
+
+        $task->update($data);
+
+        return response($task, 200);
+
     }
 
     /**
@@ -90,12 +87,14 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Task $task)
     {
-        $task = Task::findOrFail($id);
-
-        if($task->delete()) {
-            return new TaskResource($task);
+        if($task->user_id !== auth()->user()->id) {
+            return response()->json('Unauthoirzed', 401);
         }
+
+        $task->delete();
+
+        return response()->json('Deleted task.', 200);
     }
 }

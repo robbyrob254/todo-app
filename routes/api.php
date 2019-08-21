@@ -13,18 +13,17 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// https://www.youtube.com/watch?v=HGh0cKEVXPI
 Route::post('login', 'AuthController@login');
 Route::post('register', 'AuthController@register');
-Route::middleware('auth:api')->post('logout', 'AuthController@logout');
 
+Route::middleware('auth:api')->group(function() {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::post('logout', 'AuthController@logout');
+    Route::get('tasks', 'TaskController@index');
+    Route::post('task', 'TaskController@store');
+    Route::put('task/{task}', 'TaskController@update');
+    Route::delete('task/{task}', 'TaskController@destroy');
+});
 
-Route::get('tasks', 'TaskController@index');
-Route::get('task/{id}', 'TaskController@show');
-Route::post('task', 'TaskController@store');
-Route::put('task', 'TaskController@update');
-Route::delete('task/{id}', 'TaskController@destroy');

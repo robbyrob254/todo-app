@@ -53,6 +53,21 @@ export const store = new Vuex.Store({
         }
     },
     mutations: {
+        logout(state) {
+            state.tasks = [],
+            state.params.q = ''
+            state.params.filter = 'all'
+            state.params.view = '5'
+            state.params.sort = 'new'
+            state.params.page = '1'
+            state.filter.all = true
+            state.filter.active = false
+            state.filter.completed = false
+            state.pagination.current = ''
+            state.pagination.prev = ''
+            state.pagination.next = ''
+            state.pagination.last = ''
+        },
         updateParameter(state, param) {
             state.params[param.type] = param.value
         },
@@ -95,11 +110,12 @@ export const store = new Vuex.Store({
 
             dispatch('fetchTasks')
         },
-        addTask({commit, dispatch}, title) {
+        addTask({getters, dispatch}, title) {
             fetch('api/task', {
                     method: 'post',
                     headers: {
-                        'content-type': 'application/json'
+                        'content-type': 'application/json',
+                        'Authorization': 'Bearer ' + getters.loggedIn
                     },
                     body: JSON.stringify({
                         title: title
@@ -111,9 +127,13 @@ export const store = new Vuex.Store({
                 })
                 .catch(err => console.log(err))
         },
-        deleteTask({dispatch}, id) {
+        deleteTask({getters, dispatch}, id) {
             fetch(`api/task/${id}`, {
-                    method: 'DELETE'
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + getters.loggedIn
+                    }
                 })
                 .then(res => res.json())
                 .then(res => {
@@ -122,22 +142,26 @@ export const store = new Vuex.Store({
                 .catch(err => console.log(err))
         },
         fetchTasks({commit, getters}) {
-            fetch(getters.path)
-                .then(res => res.json())
-                .then(res => {
-                    // only need the page number not the whole path
-                    if(res.links.prev !== null)
-                        res.links.prev = res.links.prev.substring(res.links.prev.length -1)
-                    if(res.links.next !== null)
-                        res.links.next = res.links.next.substring(res.links.next.length -1)
+            fetch(getters.path, {
+                headers: {
+                    'Authorization': 'Bearer ' + getters.loggedIn
+                }
+            })
+            .then(res => res.json())
+            .then(res => {
+                // only need the page number not the whole path
+                if(res.links.prev !== null)
+                    res.links.prev = res.links.prev.substring(res.links.prev.length -1)
+                if(res.links.next !== null)
+                    res.links.next = res.links.next.substring(res.links.next.length -1)
 
-                    commit('updatePagination', {
-                        links: res.links,
-                        meta: res.meta
-                    });
-                    commit('updateTasks', res.data)
-                })
-                .catch(err => console.log(err))
+                commit('updatePagination', {
+                    links: res.links,
+                    meta: res.meta
+                });
+                commit('updateTasks', res.data)
+            })
+            .catch(err => console.log(err))
         },
         login({commit}, credentials) {
             return new Promise((resolve, reject) => {
@@ -155,6 +179,7 @@ export const store = new Vuex.Store({
                 .then(res => {
                     localStorage.setItem('access_token', res.access_token)
                     commit('updateToken', res.access_token)
+                    commit('logout')
                     resolve(res)
                 })
                 .catch(err => {
@@ -216,11 +241,12 @@ export const store = new Vuex.Store({
                 })
             })
         },
-        toggleTask({dispatch}, task) {
+        toggleTask({getters, dispatch}, task) {
             fetch('api/task', {
                 method: 'PUT',
                 headers: {
-                        'content-type': 'application/json'
+                        'content-type': 'application/json',
+                        'Authorization': 'Bearer ' + getters.loggedIn
                     },
                 body: JSON.stringify(task)
             })

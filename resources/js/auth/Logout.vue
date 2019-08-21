@@ -10,6 +10,7 @@
             .then(res => {
                 this.$router.push('/')
             })
+
         }
     }
 </script>

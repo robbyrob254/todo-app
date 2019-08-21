@@ -19,8 +19,16 @@ class Task extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'completed'
+        'user_id', 'title', 'completed'
     ];
+
+    /**
+     * Get the user for the task.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 
     /**
      * Filter by completed/active status
