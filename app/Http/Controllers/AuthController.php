@@ -10,6 +10,11 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
+        $request->validate([
+            'username' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'min:8'],
+        ]);
+
         $http = new \GuzzleHttp\Client;
 
         try {
@@ -26,12 +31,21 @@ class AuthController extends Controller
             return $response->getBody();
         } catch(\GuzzleHttp\Exception\BadResponseException $e) {
             if($e->getCode() === 400) {
-                return response()->json('Invalid Request. Please enter a username or a password.', $e->getCode());
+                return response()->json([
+                    'status' => $e->getCode(),
+                    'message' => 'Invalid Request. Please enter a username or a password.'
+                ]);
             } else if($e->getCode() === 401) {
-                return response()->json('Your credentials are incorrect. Please try again.', $e->getCode());
+                return response()->json([
+                    'status' => $e->getCode(),
+                    'message' => 'Your credentials are incorrect. Please try again.'
+                ]);
             }
 
-            return response()->json('Something went wrong on the server.', $e->getCode());
+            return response()->json([
+                'status' => $e->getCode(),
+                'message' => 'Something went wrong on the server.'
+            ]);
         }
     }
 
@@ -40,14 +54,16 @@ class AuthController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        return User::create([
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        return response()->json('Registration complete', 200);
     }
 
     public function logout()

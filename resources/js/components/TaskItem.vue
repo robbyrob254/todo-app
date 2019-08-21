@@ -1,12 +1,31 @@
 <template>
-    <div class="list-item">
+    <div class="list-item flex-between">
         <input type="checkbox"
+            v-show="!editing"
             :checked="task.completed == true"
             @click="toggleTask">
-        <h4 v-bind:class="{'is-complete': task.completed}">
+        <h4 v-if="!editing"
+            v-bind:class="{'is-complete': task.completed}"
+            @dblclick="editTask">
             {{ task.title }}
         </h4>
+        <div v-else class="field is-grouped">
+            <div class="control">
+                <a class="button is-info">
+                    Cancel
+                </a>
+            </div>
+            <div class="control is-expanded">
+                <input class="input" type="text" v-model="task.title">
+            </div>
+            <div class="control">
+                <a class="button is-info">
+                    Edit
+                </a>
+            </div>
+        </div>
         <button class="delete has-background-danger"
+            v-show="!editing"
             @click="deleteTask">
             X
         </button>
@@ -17,7 +36,15 @@
     export default {
         name: 'TaskItem',
         props: ['task'],
+        data() {
+            return {
+                editing: false
+            }
+        },
         methods: {
+            editTask() {
+
+            },
             toggleTask() {
                 this.$store.dispatch('toggleTask', this.task)
             },
@@ -34,8 +61,10 @@
     .is-complete {
         text-decoration: line-through;
     }
-
-    .list-item {
+    .field {
+        margin: 0;
+    }
+    .flex-between {
         display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;

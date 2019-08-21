@@ -1,7 +1,7 @@
 <template>
     <div>
-        <search></search>
         <task-form></task-form>
+        <search></search>
         <task-filter></task-filter>
         <div v-if="$store.state.tasks.length !== 0">
             <task-list></task-list>

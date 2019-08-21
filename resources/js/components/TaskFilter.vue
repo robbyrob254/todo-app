@@ -1,12 +1,13 @@
 <template>
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            <a role="button" class="navbar-burger burger button" aria-label="menu" aria-expanded="false" data-target="filter">
+            <a role="button" class="navbar-burger burger button" aria-label="menu" aria-expanded="false" data-target="filter"
+                @click="toggleDropdown">
                 Filter
             </a>
         </div>
 
-        <div id="filter" class="navbar-menu">
+        <div id="filter" class="navbar-menu" :class="{ 'is-active': showDropdown }">
             <div class="navbar-start">
                 <div class="navbar-item">
                     <div class="field">
@@ -101,6 +102,9 @@
                     value: this.sort
                 })
             },
+            toggleDropdown() {
+                this.showDropdown = !this.showDropdown
+            },
             viewTasks() {
                 this.$store.dispatch('addParameter', {
                     type: 'view',
@@ -113,7 +117,7 @@
 
 <style scoped>
     .navbar {
-        margin-bottom: .5rem;
+        margin: .5rem 0;
     }
     .navbar, .navbar-brand, .navbar-burger {
         min-height: auto;

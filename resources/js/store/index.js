@@ -168,7 +168,8 @@ export const store = new Vuex.Store({
                 fetch('/api/login', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         username: credentials.username,
@@ -177,13 +178,14 @@ export const store = new Vuex.Store({
                 })
                 .then(res => res.json())
                 .then(res => {
+                    if(res.hasOwnProperty('status') && res.status !== 200) {
+                        throw res
+                    }
                     localStorage.setItem('access_token', res.access_token)
                     commit('updateToken', res.access_token)
-                    commit('logout')
                     resolve(res)
                 })
                 .catch(err => {
-                    console.log(err)
                     reject(err)
                 })
             })
@@ -227,16 +229,16 @@ export const store = new Vuex.Store({
                 })
                 .then(res => res.json())
                 .then(res => {
-                    return dispatch('login', {
+                    if(res.hasOwnProperty('status') && res.status !== 200) {
+                        throw res.errors
+                    }
+                    dispatch('login', {
                         username: credentials.email,
                         password: credentials.password
                     })
-                })
-                .then(res => {
-                    resolve(res)
+                    .then(res => resolve(res))
                 })
                 .catch(err => {
-                    console.log(err)
                     reject(err)
                 })
             })

@@ -1,17 +1,12 @@
 <template>
-    <form class="box" @submit.prevent="searchTasks">
+    <form @submit.prevent="searchTasks">
         <div class="field">
             <label class="label">Search Tasks</label>
-            <div class="field has-addons">
+            <div class="field">
                 <div class="control is-expanded">
-                    <input class="input" type="text" placeholder="Task name"
+                    <input class="input" type="text" placeholder="Search"
                         v-model="query"
                         v-on:keyup="searchTasks">
-                </div>
-                <div class="control">
-                    <button class="button is-info">
-                        Search
-                    </button>
                 </div>
             </div>
         </div>
