@@ -36,9 +36,6 @@ export const store = new Vuex.Store({
         loggedIn(state) {
             return state.token
         },
-        page(state) {
-            return state.params.page
-        },
         path(state) {
             let path = '/api/tasks?'
             for(const prop in state.params){
@@ -80,18 +77,9 @@ export const store = new Vuex.Store({
         updateTasks(state, tasks) {
             state.tasks = tasks
         },
-        updateTitle(state, title) {
-            state.title = title.trim()
-        },
         updateToken(state, token) {
             state.token = token
         },
-        toggleFilter(state, filter) {
-            state.filter.all = false
-            state.filter.active = false
-            state.filter.completed = false
-            state.filter[filter] = true
-        }
     },
     actions: {
         addParameter({dispatch, commit}, param) {
@@ -109,39 +97,6 @@ export const store = new Vuex.Store({
             })
 
             dispatch('fetchTasks')
-        },
-        addTask({getters, dispatch}, title) {
-            fetch('api/task', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer ' + getters.loggedIn
-                    },
-                    body: JSON.stringify({
-                        title: title
-                    })
-                })
-                .then(res => res.json())
-                .then(res => {
-                    dispatch('fetchTasks')
-                })
-                .catch(err => console.log(err))
-        },
-        deleteTask({getters, dispatch}, id) {
-            fetch(`api/task/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer ' + getters.loggedIn
-                    }
-                })
-                .then(res => res.json())
-                .then(res => {
-                    dispatch('fetchTasks')
-                })
-                .catch(err => console.log(err))
         },
         fetchTasks({commit, getters}) {
             fetch(getters.path, {
@@ -193,77 +148,7 @@ export const store = new Vuex.Store({
                     reject(err)
                 })
             })
-        },
-        logout({commit, getters}) {
-            return new Promise((resolve, reject) => {
-                fetch('/api/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer ' + getters.loggedIn
-                    }
-                })
-                .then(res => res.json())
-                .then(res => {
-                    if(window.accessToken !== null) {
-                        localStorage.removeItem('access_token')
-                        commit('updateToken', null)
-                    }
-                    resolve(res)
-                })
-                .catch(err => {
-                    console.log(err)
-                    if(window.accessToken !== null) {
-                        localStorage.removeItem('access_token')
-                        commit('updateToken', null)
-                    }
-                    reject(res)
-                })
-            })
-        },
-        register({dispatch}, credentials) {
-            return new Promise((resolve, reject) => {
-                fetch('/api/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(credentials)
-                })
-                .then(res => res.json())
-                .then(res => {
-                    if(res.hasOwnProperty('status') && res.status !== 200) {
-                        throw res.errors
-                    }
-                    dispatch('login', {
-                        username: credentials.email,
-                        password: credentials.password
-                    })
-                    .then(res => resolve(res))
-                })
-                .catch(err => {
-                    reject(err)
-                })
-            })
-        },
-        toggleTask({getters, dispatch}, task) {
-            fetch(`api/task/${task.id}`, {
-                method: 'PUT',
-                headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer ' + getters.loggedIn
-                    },
-                body: JSON.stringify(task)
-            })
-            .then(res => res.json())
-            .then(res => {
-                dispatch('fetchTasks')
-            })
-            .catch(err => console.log(err))
         }
-
     }
 
 })

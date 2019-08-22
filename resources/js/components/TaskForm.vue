@@ -26,8 +26,23 @@
         },
         methods: {
             addTask() {
-                this.$store.dispatch('addTask', this.title)
-                this.title = ''
+                fetch('api/task', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+                    },
+                    body: JSON.stringify({
+                        title: this.title
+                    })
+                })
+                .then(res => res.json())
+                .then(res => {
+                    this.$store.dispatch('fetchTasks')
+                    this.title = ''
+                })
+                .catch(err => console.log(err))
             }
         }
     }

@@ -6,11 +6,21 @@
     export default {
         name: 'Logout',
         created() {
-            this.$store.dispatch('logout')
-            .then(res => {
-                this.$router.push('/')
+            fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+                }
             })
-
+            .then(res => res.json())
+            .then(res => {
+                if(window.accessToken !== null) {
+                    localStorage.removeItem('access_token')
+                    this.$store.commit('updateToken', null)
+                }
+            })
+            .catch(err => console.log(err))
         }
     }
 </script>

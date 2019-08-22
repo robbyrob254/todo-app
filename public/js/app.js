@@ -1834,8 +1834,22 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this = this;
 
-    this.$store.dispatch('logout').then(function (res) {
-      _this.$router.push('/');
+    fetch('/api/logout', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+      }
+    }).then(function (res) {
+      return res.json();
+    }).then(function (res) {
+      if (window.accessToken !== null) {
+        localStorage.removeItem('access_token');
+
+        _this.$store.commit('updateToken', null);
+      }
+    })["catch"](function (err) {
+      return console.log(err);
     });
   }
 });
@@ -1933,8 +1947,26 @@ __webpack_require__.r(__webpack_exports__);
       this.errors.name = '';
       this.errors.email = '';
       this.errors.password = '';
-      this.$store.dispatch('register', this.credentials).then(function (res) {
-        _this.$router.push('/todo');
+      fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(this.credentials)
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        if (res.hasOwnProperty('errors') || res.status !== 200) {
+          throw res.errors;
+        } else {
+          _this.$store.dispatch('login', {
+            username: _this.credentials.email,
+            password: _this.credentials.password
+          }).then(function (res) {
+            _this.$router.push('/todo');
+          });
+        }
       })["catch"](function (err) {
         if (err.hasOwnProperty('name')) _this.errors.name = err.name.join(',');
         if (err.hasOwnProperty('email')) _this.errors.email = err.email.join(',');
@@ -2215,8 +2247,27 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     addTask: function addTask() {
-      this.$store.dispatch('addTask', this.title);
-      this.title = '';
+      var _this = this;
+
+      fetch('api/task', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+        },
+        body: JSON.stringify({
+          title: this.title
+        })
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this.$store.dispatch('fetchTasks');
+
+        _this.title = '';
+      })["catch"](function (err) {
+        return console.log(err);
+      });
     }
   }
 });
@@ -2255,17 +2306,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskItem',
   props: ['task'],
@@ -2275,15 +2315,55 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    editTask: function editTask() {},
+    editFinish: function editFinish() {
+      this.editing = false;
+      this.updateTask();
+    },
+    editStart: function editStart() {
+      this.editing = true;
+    },
     toggleTask: function toggleTask() {
-      console.log(this.task);
-      this.$store.dispatch('toggleTask', this.task);
+      this.task.completed = !this.task.completed;
+      this.updateTask();
     },
     deleteTask: function deleteTask() {
+      var _this = this;
+
       if (confirm("Delete ".concat(this.task.title, "?"))) {
-        this.$store.dispatch('deleteTask', this.task.id);
+        fetch("api/task/".concat(this.task.id), {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+          }
+        }).then(function (res) {
+          return res.json();
+        }).then(function (res) {
+          _this.$store.dispatch('fetchTasks');
+        })["catch"](function (err) {
+          return console.log(err);
+        });
       }
+    },
+    updateTask: function updateTask() {
+      var _this2 = this;
+
+      fetch("api/task/".concat(this.task.id), {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+        },
+        body: JSON.stringify(this.task)
+      }).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        _this2.$store.dispatch('fetchTasks');
+      })["catch"](function (err) {
+        return console.log(err);
+      });
     }
   }
 });
@@ -2467,7 +2547,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.is-complete[data-v-00f813a3] {\n    text-decoration: line-through;\n}\n.field[data-v-00f813a3] {\n    margin: 0;\n}\n.flex-between[data-v-00f813a3] {\n    display: flex;\n    flex-flow: row nowrap;\n    justify-content: space-between;\n    align-items: center;\n    padding: 1rem 1.25rem;\n}\ninput[data-v-00f813a3] {\n    margin-right: 1rem;\n}\nh4[data-v-00f813a3] {\n    flex-grow: 1;\n}\n\n", ""]);
+exports.push([module.i, "\n.is-complete[data-v-00f813a3] {\n    text-decoration: line-through;\n}\n.field[data-v-00f813a3] {\n    margin: 0;\n}\n.flex-between[data-v-00f813a3] {\n    display: flex;\n    flex-flow: row nowrap;\n    justify-content: space-between;\n    align-items: center;\n    padding: 1rem 1.25rem;\n}\n.m[data-v-00f813a3] {\n    padding: .6rem 1.25rem;\n}\n.mr[data-v-00f813a3] {\n    margin-right: .4rem;\n}\ninput[data-v-00f813a3] {\n    margin-right: 1rem;\n}\nh4[data-v-00f813a3] {\n    flex-grow: 1;\n}\n\n", ""]);
 
 // exports
 
@@ -21686,100 +21766,83 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "list-item flex-between" }, [
-    _c("input", {
-      directives: [
+  return _c(
+    "div",
+    { staticClass: "list-item flex-between", class: { m: _vm.editing } },
+    [
+      _c("input", {
+        class: { mr: _vm.editing },
+        attrs: { type: "checkbox" },
+        domProps: { checked: _vm.task.completed == true },
+        on: { click: _vm.toggleTask }
+      }),
+      _vm._v(" "),
+      _c(
+        "h4",
         {
-          name: "show",
-          rawName: "v-show",
-          value: !_vm.editing,
-          expression: "!editing"
-        }
-      ],
-      attrs: { type: "checkbox" },
-      domProps: { checked: _vm.task.completed == true },
-      on: { click: _vm.toggleTask }
-    }),
-    _vm._v(" "),
-    !_vm.editing
-      ? _c(
-          "h4",
-          {
-            class: { "is-complete": _vm.task.completed },
-            on: { dblclick: _vm.editTask }
-          },
-          [_vm._v("\n        " + _vm._s(_vm.task.title) + "\n    ")]
-        )
-      : _c("div", { staticClass: "field is-grouped" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "control is-expanded" }, [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.task.title,
-                  expression: "task.title"
-                }
-              ],
-              staticClass: "input",
-              attrs: { type: "text" },
-              domProps: { value: _vm.task.title },
-              on: {
-                input: function($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.$set(_vm.task, "title", $event.target.value)
-                }
-              }
-            })
-          ]),
-          _vm._v(" "),
-          _vm._m(1)
-        ]),
-    _vm._v(" "),
-    _c(
-      "button",
-      {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: !_vm.editing,
+              expression: "!editing"
+            }
+          ],
+          class: { "is-complete": _vm.task.completed },
+          on: { dblclick: _vm.editStart }
+        },
+        [_vm._v("\n        " + _vm._s(_vm.task.title) + "\n    ")]
+      ),
+      _vm._v(" "),
+      _c("input", {
         directives: [
           {
             name: "show",
             rawName: "v-show",
-            value: !_vm.editing,
-            expression: "!editing"
+            value: _vm.editing,
+            expression: "editing"
+          },
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.task.title,
+            expression: "task.title"
           }
         ],
-        staticClass: "delete has-background-danger",
-        on: { click: _vm.deleteTask }
-      },
-      [_vm._v("\n        X\n    ")]
-    )
-  ])
+        staticClass: "input",
+        attrs: { type: "text" },
+        domProps: { value: _vm.task.title },
+        on: {
+          keyup: function($event) {
+            if (
+              !$event.type.indexOf("key") &&
+              _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
+            ) {
+              return null
+            }
+            return _vm.editFinish($event)
+          },
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.task, "title", $event.target.value)
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "delete has-background-danger",
+          on: { click: _vm.deleteTask }
+        },
+        [_vm._v("\n        X\n    ")]
+      )
+    ]
+  )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "control" }, [
-      _c("a", { staticClass: "button is-info" }, [
-        _vm._v("\n                Cancel\n            ")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "control" }, [
-      _c("a", { staticClass: "button is-info" }, [
-        _vm._v("\n                Edit\n            ")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -39236,9 +39299,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     loggedIn: function loggedIn(state) {
       return state.token;
     },
-    page: function page(state) {
-      return state.params.page;
-    },
     path: function path(state) {
       var path = '/api/tasks?';
 
@@ -39281,17 +39341,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     updateTasks: function updateTasks(state, tasks) {
       state.tasks = tasks;
     },
-    updateTitle: function updateTitle(state, title) {
-      state.title = title.trim();
-    },
     updateToken: function updateToken(state, token) {
       state.token = token;
-    },
-    toggleFilter: function toggleFilter(state, filter) {
-      state.filter.all = false;
-      state.filter.active = false;
-      state.filter.completed = false;
-      state.filter[filter] = true;
     }
   },
   actions: {
@@ -39313,48 +39364,9 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
       });
       dispatch('fetchTasks');
     },
-    addTask: function addTask(_ref2, title) {
-      var getters = _ref2.getters,
-          dispatch = _ref2.dispatch;
-      fetch('api/task', {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + getters.loggedIn
-        },
-        body: JSON.stringify({
-          title: title
-        })
-      }).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        dispatch('fetchTasks');
-      })["catch"](function (err) {
-        return console.log(err);
-      });
-    },
-    deleteTask: function deleteTask(_ref3, id) {
-      var getters = _ref3.getters,
-          dispatch = _ref3.dispatch;
-      fetch("api/task/".concat(id), {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + getters.loggedIn
-        }
-      }).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        dispatch('fetchTasks');
-      })["catch"](function (err) {
-        return console.log(err);
-      });
-    },
-    fetchTasks: function fetchTasks(_ref4) {
-      var commit = _ref4.commit,
-          getters = _ref4.getters;
+    fetchTasks: function fetchTasks(_ref2) {
+      var commit = _ref2.commit,
+          getters = _ref2.getters;
       fetch(getters.path, {
         headers: {
           'Content-Type': 'application/json',
@@ -39376,8 +39388,8 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         return console.log(err);
       });
     },
-    login: function login(_ref5, credentials) {
-      var commit = _ref5.commit;
+    login: function login(_ref3, credentials) {
+      var commit = _ref3.commit;
       return new Promise(function (resolve, reject) {
         fetch('/api/login', {
           method: 'POST',
@@ -39402,84 +39414,6 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
         })["catch"](function (err) {
           reject(err);
         });
-      });
-    },
-    logout: function logout(_ref6) {
-      var commit = _ref6.commit,
-          getters = _ref6.getters;
-      return new Promise(function (resolve, reject) {
-        fetch('/api/logout', {
-          method: 'POST',
-          headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + getters.loggedIn
-          }
-        }).then(function (res) {
-          return res.json();
-        }).then(function (res) {
-          if (window.accessToken !== null) {
-            localStorage.removeItem('access_token');
-            commit('updateToken', null);
-          }
-
-          resolve(res);
-        })["catch"](function (err) {
-          console.log(err);
-
-          if (window.accessToken !== null) {
-            localStorage.removeItem('access_token');
-            commit('updateToken', null);
-          }
-
-          reject(res);
-        });
-      });
-    },
-    register: function register(_ref7, credentials) {
-      var dispatch = _ref7.dispatch;
-      return new Promise(function (resolve, reject) {
-        fetch('/api/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(credentials)
-        }).then(function (res) {
-          return res.json();
-        }).then(function (res) {
-          if (res.hasOwnProperty('status') && res.status !== 200) {
-            throw res.errors;
-          }
-
-          dispatch('login', {
-            username: credentials.email,
-            password: credentials.password
-          }).then(function (res) {
-            return resolve(res);
-          });
-        })["catch"](function (err) {
-          reject(err);
-        });
-      });
-    },
-    toggleTask: function toggleTask(_ref8, task) {
-      var getters = _ref8.getters,
-          dispatch = _ref8.dispatch;
-      fetch("api/task/".concat(task.id), {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ' + getters.loggedIn
-        },
-        body: JSON.stringify(task)
-      }).then(function (res) {
-        return res.json();
-      }).then(function (res) {
-        dispatch('fetchTasks');
-      })["catch"](function (err) {
-        return console.log(err);
       });
     }
   }

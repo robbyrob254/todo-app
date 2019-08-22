@@ -1,31 +1,20 @@
 <template>
-    <div class="list-item flex-between">
+    <div class="list-item flex-between"
+        :class="{'m': editing}">
         <input type="checkbox"
-            v-show="!editing"
+            :class="{'mr': editing}"
             :checked="task.completed == true"
             @click="toggleTask">
-        <h4 v-if="!editing"
-            v-bind:class="{'is-complete': task.completed}"
-            @dblclick="editTask">
+        <h4 :class="{'is-complete': task.completed}"
+            v-show="!editing"
+            @dblclick="editStart">
             {{ task.title }}
         </h4>
-        <div v-else class="field is-grouped">
-            <div class="control">
-                <a class="button is-info">
-                    Cancel
-                </a>
-            </div>
-            <div class="control is-expanded">
-                <input class="input" type="text" v-model="task.title">
-            </div>
-            <div class="control">
-                <a class="button is-info">
-                    Edit
-                </a>
-            </div>
-        </div>
+        <input class="input" type="text"
+            v-show="editing"
+            v-model="task.title"
+            @keyup.enter="editFinish">
         <button class="delete has-background-danger"
-            v-show="!editing"
             @click="deleteTask">
             X
         </button>
@@ -42,18 +31,50 @@
             }
         },
         methods: {
-            editTask() {
-
+            editFinish() {
+                this.editing = false
+                this.updateTask()
+            },
+            editStart() {
+                this.editing = true
             },
             toggleTask() {
-                console.log(this.task)
-                this.$store.dispatch('toggleTask', this.task)
+                this.task.completed = !this.task.completed
+                this.updateTask()
             },
             deleteTask() {
                 if(confirm(`Delete ${this.task.title}?`)) {
-                    this.$store.dispatch('deleteTask', this.task.id)
+                    fetch(`api/task/${this.task.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        this.$store.dispatch('fetchTasks')
+                    })
+                    .catch(err => console.log(err))
                 }
             },
+            updateTask() {
+                fetch(`api/task/${this.task.id}`, {
+                    method: 'PUT',
+                    headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + this.$store.getters.loggedIn
+                        },
+                    body: JSON.stringify(this.task)
+                })
+                .then(res => res.json())
+                .then(res => {
+                    this.$store.dispatch('fetchTasks')
+                })
+                .catch(err => console.log(err))
+            }
         }
     }
 </script>
@@ -72,11 +93,15 @@
         align-items: center;
         padding: 1rem 1.25rem;
     }
-
+    .m {
+        padding: .6rem 1.25rem;
+    }
+    .mr {
+        margin-right: .4rem;
+    }
     input {
         margin-right: 1rem;
     }
-
     h4 {
         flex-grow: 1;
     }

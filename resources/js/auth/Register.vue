@@ -79,9 +79,27 @@
                 this.errors.name = ''
                 this.errors.email = ''
                 this.errors.password = ''
-                this.$store.dispatch('register', this.credentials)
+                fetch('/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(this.credentials)
+                })
+                .then(res => res.json())
                 .then(res => {
-                    this.$router.push('/todo')
+                    if(res.hasOwnProperty('errors') || res.status !== 200) {
+                        throw res.errors
+                    } else {
+                        this.$store.dispatch('login', {
+                            username: this.credentials.email,
+                            password: this.credentials.password
+                        })
+                        .then(res => {
+                            this.$router.push('/todo')
+                        })
+                    }
                 })
                 .catch(err => {
                     if(err.hasOwnProperty('name'))

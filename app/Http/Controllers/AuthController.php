@@ -63,7 +63,10 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json('Registration complete', 200);
+        return response()->json([
+            'status' => 200,
+            'message' => 'Registration complete'
+        ]);
     }
 
     public function logout()
