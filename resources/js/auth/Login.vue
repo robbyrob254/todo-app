@@ -1,36 +1,46 @@
 <template>
-    <div class="box">
-        <form @submit.prevent="login">
-            <div class="field">
-                <p class="control has-icons-left">
-                    <input class="input" type="email" placeholder="Email"
-                        v-model="username"
-                        :class="{ 'is-danger': hasError }">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-envelope"></i>
-                    </span>
-                </p>
+    <section class="hero is-fullheight-with-navbar">
+        <div class="hero-body">
+            <div class="container">
+                <div class="columns is-centered">
+                    <div class="column is-two-thirds-tablet is-half-widescreen">
+                        <div class="box">
+                            <form @submit.prevent="login">
+                                <div class="field">
+                                    <p class="control has-icons-left">
+                                        <input class="input" type="email" placeholder="Email"
+                                            v-model="username"
+                                            :class="{ 'is-danger': hasError }">
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-envelope"></i>
+                                        </span>
+                                    </p>
+                                </div>
+                                <div class="field">
+                                    <p class="control has-icons-left">
+                                        <input class="input" type="password" placeholder="Password"
+                                            v-model="password"
+                                            :class="{ 'is-danger': hasError }">
+                                        <span class="icon is-small is-left">
+                                            <i class="fas fa-lock"></i>
+                                        </span>
+                                    </p>
+                                    <p class="help is-danger">{{ serverError }}</p>
+                                </div>
+                                <div class="field">
+                                    <p class="control">
+                                        <button class="button is-success">
+                                            Login
+                                        </button>
+                                    </p>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="field">
-                <p class="control has-icons-left">
-                    <input class="input" type="password" placeholder="Password"
-                        v-model="password"
-                        :class="{ 'is-danger': hasError }">
-                    <span class="icon is-small is-left">
-                        <i class="fas fa-lock"></i>
-                    </span>
-                </p>
-                <p class="help is-danger">{{ serverError }}</p>
-            </div>
-            <div class="field">
-                <p class="control">
-                    <button class="button is-success">
-                        Login
-                    </button>
-                </p>
-            </div>
-        </form>
-    </div>
+        </div>
+    </section>
 </template>
 
 
@@ -67,3 +77,9 @@
         }
     }
 </script>
+
+<style scoped>
+    .hero-body {
+        flex-grow: 0;
+    }
+</style>

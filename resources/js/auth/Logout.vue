@@ -19,6 +19,7 @@
                     localStorage.removeItem('access_token')
                     this.$store.commit('updateToken', null)
                 }
+                this.$router.push('/')
             })
             .catch(err => console.log(err))
         }
