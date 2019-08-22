@@ -71,14 +71,18 @@
             </div>
         </div>
     </nav>
-
 </template>
 
 
 
 <script>
+import Search from '../components/Search.vue'
+
     export default {
         name: 'TaskFilter',
+        components: {
+            Search
+        },
         data() {
             return {
                 showDropdown: false,
@@ -126,14 +130,5 @@
     }
     .navbar-burger:hover {
         background-color: transparent;
-    }
-
-    @media screen and (min-width: 769px) {
-        .navbar-start {
-            margin-left: -12px;
-        }
-        .navbar-end {
-            margin-right: -12px;
-        }
     }
 </style>

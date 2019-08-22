@@ -1,5 +1,5 @@
 <template>
-    <section class="hero is-info is-bold">
+    <section class="hero">
         <div class="hero-head">
             <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">

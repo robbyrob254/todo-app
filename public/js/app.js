@@ -2066,6 +2066,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _components_Search_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/Search.vue */ "./resources/js/components/Search.vue");
 //
 //
 //
@@ -2143,9 +2144,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'TaskFilter',
+  components: {
+    Search: _components_Search_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   data: function data() {
     return {
       showDropdown: false,
@@ -2531,6 +2535,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -2632,7 +2638,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.navbar[data-v-0e6aab88] {\n    margin: .5rem 0;\n}\n.navbar[data-v-0e6aab88], .navbar-brand[data-v-0e6aab88], .navbar-burger[data-v-0e6aab88] {\n    min-height: auto;\n    height: auto;\n    width: auto;\n}\n.navbar-burger[data-v-0e6aab88]:hover {\n    background-color: transparent;\n}\n@media screen and (min-width: 769px) {\n.navbar-start[data-v-0e6aab88] {\n        margin-left: -12px;\n}\n.navbar-end[data-v-0e6aab88] {\n        margin-right: -12px;\n}\n}\n", ""]);
+exports.push([module.i, "\n.navbar[data-v-0e6aab88] {\n    margin: .5rem 0;\n}\n.navbar[data-v-0e6aab88], .navbar-brand[data-v-0e6aab88], .navbar-burger[data-v-0e6aab88] {\n    min-height: auto;\n    height: auto;\n    width: auto;\n}\n.navbar-burger[data-v-0e6aab88]:hover {\n    background-color: transparent;\n}\n", ""]);
 
 // exports
 
@@ -21963,7 +21969,7 @@ var render = function() {
   return _c(
     "form",
     {
-      staticClass: "box",
+      staticClass: "box has-background-white-ter",
       on: {
         submit: function($event) {
           $event.preventDefault()
@@ -22175,7 +22181,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "section",
-    { staticClass: "hero is-info is-bold" },
+    { staticClass: "hero" },
     [
       _c("div", { staticClass: "hero-head" }, [
         _c(
@@ -22454,13 +22460,20 @@ var render = function() {
         [
           _c("task-form"),
           _vm._v(" "),
-          _c("search"),
-          _vm._v(" "),
-          _c("task-filter"),
-          _vm._v(" "),
-          _vm.$store.state.tasks.length !== 0
-            ? _c("div", [_c("task-list"), _vm._v(" "), _c("pagination")], 1)
-            : _c("div", [_c("p", [_vm._v("No tasks found.")])])
+          _c(
+            "div",
+            { staticClass: "box" },
+            [
+              _c("search"),
+              _vm._v(" "),
+              _c("task-filter"),
+              _vm._v(" "),
+              _vm.$store.state.tasks.length !== 0
+                ? _c("div", [_c("task-list"), _vm._v(" "), _c("pagination")], 1)
+                : _c("div", [_c("p", [_vm._v("No tasks found.")])])
+            ],
+            1
+          )
         ],
         1
       )
