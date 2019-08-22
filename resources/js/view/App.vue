@@ -3,7 +3,7 @@
         <div class="hero-body">
             <div class="container">
                 <task-form></task-form>
-                <div class="box">
+                <div class="box has-background-white-ter">
                     <search></search>
                     <task-filter></task-filter>
                     <div v-if="$store.state.tasks.length !== 0">

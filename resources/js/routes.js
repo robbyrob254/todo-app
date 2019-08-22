@@ -1,5 +1,4 @@
 import Welcome from './view/Welcome.vue';
-import About from './view/About.vue';
 import App from './view/App.vue';
 import Register from './auth/Register.vue';
 import Login from './auth/Login.vue';
@@ -9,10 +8,6 @@ const routes = [
     {
         path: '/',
         component: Welcome
-    },
-    {
-        path: '/about',
-        component: About
     },
     {
         path: '/register',
@@ -33,7 +28,7 @@ const routes = [
         component: Logout
     },
     {
-        path: '/todo',
+        path: '/tasks',
         component: App,
         meta: {
             requiresAuth: true,

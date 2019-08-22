@@ -1,5 +1,5 @@
 <template>
-    <section class="hero">
+    <section class="hero is-light is-bold">
         <div class="hero-head">
             <nav class="navbar is-transparent" role="navigation" aria-label="main navigation">
                 <div class="navbar-brand">
@@ -19,15 +19,10 @@
                             Home
                         </router-link>
                         <router-link class="navbar-item"
-                            to="/about"
-                            v-on:click.native="toggleDropdown">
-                            About
-                        </router-link>
-                        <router-link class="navbar-item"
-                            to="/todo"
+                            to="/tasks"
                             v-if="$store.getters.loggedIn"
                             v-on:click.native="toggleDropdown">
-                            App
+                            Tasks
                         </router-link>
                     </div>
 

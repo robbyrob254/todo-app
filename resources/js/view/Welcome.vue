@@ -3,11 +3,8 @@
         <div class="hero-body">
             <div class="container">
                 <h1 class="title">
-                    Primary bold title
+                    Task List App
                 </h1>
-                <h2 class="subtitle">
-                    Primary bold subtitle
-                </h2>
             </div>
         </div>
     </section>

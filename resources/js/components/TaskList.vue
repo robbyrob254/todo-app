@@ -1,5 +1,5 @@
 <template>
-    <ul class="list">
+    <ul class="list has-background-white-ter">
         <li v-for="task in this.$store.state.tasks" v-bind:key="task.id">
             <task-item v-bind:task="task" />
         </li>

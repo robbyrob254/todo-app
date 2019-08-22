@@ -62,7 +62,7 @@
                     password: this.password
                 })
                 .then(res => {
-                    this.$router.push('/todo')
+                    this.$router.push('/tasks')
                 })
                 .catch(err => {
                     if(err.hasOwnProperty('message'))

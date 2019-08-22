@@ -107,7 +107,7 @@
                             password: this.credentials.password
                         })
                         .then(res => {
-                            this.$router.push('/todo')
+                            this.$router.push('/tasks')
                         })
                     }
                 })
