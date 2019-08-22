@@ -1,9 +1,9 @@
-import Welcome from './static/Welcome.vue';
-import About from './static/About.vue';
+import Welcome from './view/Welcome.vue';
+import About from './view/About.vue';
+import App from './view/App.vue';
 import Register from './auth/Register.vue';
 import Login from './auth/Login.vue';
 import Logout from './auth/Logout.vue';
-import App from './App.vue';
 
 const routes = [
     {

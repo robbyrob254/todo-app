@@ -14,11 +14,11 @@
 </template>
 
 <script>
-    import Search from './components/Search.vue'
-    import TaskFilter from './components/TaskFilter.vue'
-    import TaskList from './components/TaskList.vue'
-    import Pagination from './components/Pagination.vue'
-    import TaskForm from './components/TaskForm.vue'
+    import Search from '../components/Search.vue'
+    import TaskFilter from '../components/TaskFilter.vue'
+    import TaskList from '../components/TaskList.vue'
+    import Pagination from '../components/Pagination.vue'
+    import TaskForm from '../components/TaskForm.vue'
 
     export default {
         name: 'App',

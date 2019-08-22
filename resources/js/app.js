@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
                 path: '/todo'
             })
         } else {
-                next()
+            next()
         }
     } else {
         next()
