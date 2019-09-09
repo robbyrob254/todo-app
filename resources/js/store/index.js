@@ -10,7 +10,7 @@ export const store = new Vuex.Store({
         params: {
             q: '',
             active: '',
-            view: '',
+            view: '5',
             sort: 'desc',
             page: ''
         },

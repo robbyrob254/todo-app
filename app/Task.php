@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pipeline\Pipeline;
 
 class Task extends Model
 {
@@ -30,31 +31,16 @@ class Task extends Model
         return $this->belongsTo('App\User');
     }
 
-    /**
-     * Filter by completed/active status
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param string $status
-     */
-    public function scopeFilter($query, $status) {
-        if($status == 'active') {
-            return $query->where('completed', false);
-        } else if($status == 'completed') {
-            return $query->where('completed', true);
-        }
-    }
-
-    /**
-     * Filter by completed/active status
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder $query
-     * @param string $status
-     */
-    public function scopeSort($query, $option) {
-        if($option =='new') {
-            return $query->orderBy('created_at', 'desc');
-        } else if($option == 'old') {
-            return $query->orderBy('created_at', 'asc');
-        }
+    public static function allTasks($view = 5) {
+        return app(Pipeline::class)
+        ->send(Task::query())
+        ->through([
+            \App\QueryFilters\Auth::class,
+            \App\QueryFilters\Active::class,
+            \App\QueryFilters\Search::class,
+            \App\QueryFilters\Sort::class,
+        ])
+        ->thenReturn()
+        ->paginate($view);
     }
 }

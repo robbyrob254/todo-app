@@ -39332,7 +39332,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     params: {
       q: '',
       active: '',
-      view: '',
+      view: '5',
       sort: 'desc',
       page: ''
     },

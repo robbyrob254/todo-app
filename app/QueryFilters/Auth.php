@@ -8,9 +8,6 @@ class Auth
 {
     public function handle($request, Closure $next)
     {
-        $builder = $next($request);
-
-        return $builder->where('user_id', auth()->user()->id);
-
+        return $next($request)->where('user_id', auth()->user()->id);
     }
 }

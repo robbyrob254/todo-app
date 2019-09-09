@@ -2,19 +2,10 @@
 
 namespace App\QueryFilters;
 
-use Closure;
-
-class Search
+class Search extends Filter
 {
-    public function handle($request, Closure $next)
+    protected function applyFilter($builder)
     {
-        if(!request()->has('q')) {
-            return $next($request);
-        }
-
-        $builder = $next($request);
-
         return $builder->where('title', 'like', '%'.request('q').'%');
-
     }
 }
