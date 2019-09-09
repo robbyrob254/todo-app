@@ -2153,7 +2153,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       showDropdown: false,
-      sort: 'new',
+      sort: 'desc',
       view: '5'
     };
   },
@@ -2163,7 +2163,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     filterTasks: function filterTasks(filter) {
       this.$store.dispatch('addParameter', {
-        type: 'filter',
+        type: 'active',
         value: filter
       });
     },
@@ -21679,7 +21679,7 @@ var render = function() {
                         class: { "is-focused": _vm.hasFilter("all") },
                         on: {
                           click: function($event) {
-                            return _vm.filterTasks("all")
+                            return _vm.filterTasks("")
                           }
                         }
                       },
@@ -21699,7 +21699,7 @@ var render = function() {
                         class: { "is-focused": _vm.hasFilter("active") },
                         on: {
                           click: function($event) {
-                            return _vm.filterTasks("active")
+                            return _vm.filterTasks(0)
                           }
                         }
                       },
@@ -21719,7 +21719,7 @@ var render = function() {
                         class: { "is-focused": _vm.hasFilter("completed") },
                         on: {
                           click: function($event) {
-                            return _vm.filterTasks("completed")
+                            return _vm.filterTasks(1)
                           }
                         }
                       },
@@ -21775,11 +21775,11 @@ var render = function() {
                       [
                         _c(
                           "option",
-                          { attrs: { value: "new", selected: "" } },
+                          { attrs: { value: "desc", selected: "" } },
                           [_vm._v("Newest")]
                         ),
                         _vm._v(" "),
-                        _c("option", { attrs: { value: "old" } }, [
+                        _c("option", { attrs: { value: "asc" } }, [
                           _vm._v("Oldest")
                         ])
                       ]
@@ -39331,10 +39331,10 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     tasks: [],
     params: {
       q: '',
-      filter: 'all',
-      view: '5',
-      sort: 'new',
-      page: '1'
+      active: '',
+      view: '',
+      sort: 'desc',
+      page: ''
     },
     filter: {
       all: true,
@@ -39426,6 +39426,7 @@ var store = new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
     fetchTasks: function fetchTasks(_ref2) {
       var commit = _ref2.commit,
           getters = _ref2.getters;
+      console.log(getters.path);
       fetch(getters.path, {
         headers: {
           'Content-Type': 'application/json',

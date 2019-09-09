@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Task;
 use App\Http\Resources\Task as TaskResource;
+use Illuminate\Pipeline\Pipeline;
 
 class TaskController extends Controller
 {
@@ -15,27 +16,16 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $q = Task::query();
-
-        $q->where('user_id', auth()->user()->id);
-
-        if($request->q) {
-            $q->where('title', 'like', '%'.$request->q.'%');
-        }
-
-        if($request->filter) {
-            $q->filter($request->filter);
-        }
-
-        if($request->sort) {
-            $q->sort($request->sort);
-        }
-
-        if($request->view) {
-            $tasks = $q->paginate($request->view);
-        } else {
-            $tasks = $q->paginate(5);
-        }
+        $tasks = app(Pipeline::class)
+            ->send(Task::query())
+            ->through([
+                \App\QueryFilters\Auth::class,
+                \App\QueryFilters\Active::class,
+                \App\QueryFilters\Search::class,
+                \App\QueryFilters\Sort::class,
+            ])
+            ->thenReturn()
+            ->paginate($request->view ?: 5);
 
         return TaskResource::collection($tasks);
     }

@@ -9,10 +9,10 @@ export const store = new Vuex.Store({
         tasks: [],
         params: {
             q: '',
-            filter: 'all',
-            view: '5',
-            sort: 'new',
-            page: '1'
+            active: '',
+            view: '',
+            sort: 'desc',
+            page: ''
         },
         filter: {
             all: true,
@@ -99,6 +99,7 @@ export const store = new Vuex.Store({
             dispatch('fetchTasks')
         },
         fetchTasks({commit, getters}) {
+            console.log(getters.path)
             fetch(getters.path, {
                 headers: {
                     'Content-Type': 'application/json',

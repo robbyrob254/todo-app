@@ -16,21 +16,21 @@
                             <div class="control">
                                 <button class="button"
                                     :class="{'is-focused': hasFilter('all')}"
-                                    @click="filterTasks('all')">
+                                    @click="filterTasks('')">
                                     All
                                 </button>
                             </div>
                             <div class="control">
                                 <button class="button"
                                     :class="{'is-focused': hasFilter('active')}"
-                                    @click="filterTasks('active')">
+                                    @click="filterTasks(0)">
                                     Active
                                 </button>
                             </div>
                             <div class="control">
                                 <button class="button"
                                     :class="{'is-focused': hasFilter('completed')}"
-                                    @click="filterTasks('completed')">
+                                    @click="filterTasks(1)">
                                     Completed
                                 </button>
                             </div>
@@ -46,8 +46,8 @@
                         <div class="control">
                             <div class="select is-fullwidth">
                                 <select v-model="sort" @change="sortTasks">
-                                    <option value="new" selected>Newest</option>
-                                    <option value="old">Oldest</option>
+                                    <option value="desc" selected>Newest</option>
+                                    <option value="asc">Oldest</option>
                                 </select>
                             </div>
                         </div>
@@ -86,7 +86,7 @@ import Search from '../components/Search.vue'
         data() {
             return {
                 showDropdown: false,
-                sort: 'new',
+                sort: 'desc',
                 view: '5'
             }
         },
@@ -96,7 +96,7 @@ import Search from '../components/Search.vue'
             },
             filterTasks(filter) {
                 this.$store.dispatch('addParameter', {
-                    type: 'filter',
+                    type: 'active',
                     value: filter
                 })
             },
