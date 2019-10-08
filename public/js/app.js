@@ -2418,30 +2418,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Master',
   data: function data() {
@@ -2491,8 +2467,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 
@@ -2523,12 +2497,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -21874,7 +21842,7 @@ var render = function() {
   return _c(
     "form",
     {
-      staticClass: "box has-background-white-ter",
+      staticClass: "box",
       on: {
         submit: function($event) {
           $event.preventDefault()
@@ -22050,7 +22018,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "ul",
-    { staticClass: "list has-background-white-ter" },
+    { staticClass: "list" },
     _vm._l(this.$store.state.tasks, function(task) {
       return _c(
         "li",
@@ -22086,7 +22054,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "section",
-    { staticClass: "hero is-light is-bold" },
+    { staticClass: "hero" },
     [
       _c("div", { staticClass: "hero-head" }, [
         _c(
@@ -22096,156 +22064,76 @@ var render = function() {
             attrs: { role: "navigation", "aria-label": "main navigation" }
           },
           [
-            _c("div", { staticClass: "navbar-brand" }, [
-              _c(
-                "a",
-                {
-                  staticClass: "navbar-burger burger",
-                  attrs: {
-                    role: "button",
-                    "aria-label": "menu",
-                    "aria-expanded": "false"
-                  },
-                  on: { click: _vm.toggleDropdown }
-                },
-                [
-                  _c("span", { attrs: { "aria-hidden": "true" } }),
-                  _vm._v(" "),
-                  _c("span", { attrs: { "aria-hidden": "true" } }),
-                  _vm._v(" "),
-                  _c("span", { attrs: { "aria-hidden": "true" } })
-                ]
-              )
-            ]),
-            _vm._v(" "),
             _c(
               "div",
-              {
-                staticClass: "navbar-menu",
-                class: { "is-active": _vm.showDropdown }
-              },
+              { staticClass: "navbar-brand" },
               [
-                _c(
-                  "div",
-                  { staticClass: "navbar-start" },
-                  [
-                    _c(
+                _c("div", { staticClass: "navbar-item" }, [
+                  _c(
+                    "div",
+                    { staticClass: "buttons" },
+                    [
+                      !_vm.$store.getters.loggedIn
+                        ? _c(
+                            "router-link",
+                            {
+                              staticClass: "button is-link is-outlined",
+                              attrs: { to: "/register" },
+                              nativeOn: {
+                                click: function($event) {
+                                  return _vm.toggleDropdown($event)
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Sign up\n                        "
+                              )
+                            ]
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      !_vm.$store.getters.loggedIn
+                        ? _c(
+                            "router-link",
+                            {
+                              staticClass: "button is-dark is-outlined",
+                              attrs: { to: "/login" },
+                              nativeOn: {
+                                click: function($event) {
+                                  return _vm.toggleDropdown($event)
+                                }
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\n                            Log in\n                        "
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _vm.$store.getters.loggedIn
+                  ? _c(
                       "router-link",
                       {
                         staticClass: "navbar-item",
-                        attrs: { to: "/" },
+                        attrs: { to: "/logout" },
                         nativeOn: {
                           click: function($event) {
                             return _vm.toggleDropdown($event)
                           }
                         }
                       },
-                      [
-                        _vm._v(
-                          "\n                        Home\n                    "
-                        )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _vm.$store.getters.loggedIn
-                      ? _c(
-                          "router-link",
-                          {
-                            staticClass: "navbar-item",
-                            attrs: { to: "/tasks" },
-                            nativeOn: {
-                              click: function($event) {
-                                return _vm.toggleDropdown($event)
-                              }
-                            }
-                          },
-                          [
-                            _vm._v(
-                              "\n                        Tasks\n                    "
-                            )
-                          ]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "navbar-end" },
-                  [
-                    _c("div", { staticClass: "navbar-item" }, [
-                      _c(
-                        "div",
-                        { staticClass: "buttons" },
-                        [
-                          !_vm.$store.getters.loggedIn
-                            ? _c(
-                                "router-link",
-                                {
-                                  staticClass: "button is-primary",
-                                  attrs: { to: "/register" },
-                                  nativeOn: {
-                                    click: function($event) {
-                                      return _vm.toggleDropdown($event)
-                                    }
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                Sign up\n                            "
-                                  )
-                                ]
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          !_vm.$store.getters.loggedIn
-                            ? _c(
-                                "router-link",
-                                {
-                                  staticClass: "button is-light",
-                                  attrs: { to: "/login" },
-                                  nativeOn: {
-                                    click: function($event) {
-                                      return _vm.toggleDropdown($event)
-                                    }
-                                  }
-                                },
-                                [
-                                  _vm._v(
-                                    "\n                                Log in\n                            "
-                                  )
-                                ]
-                              )
-                            : _vm._e()
-                        ],
-                        1
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _vm.$store.getters.loggedIn
-                      ? _c(
-                          "router-link",
-                          {
-                            staticClass: "navbar-item",
-                            attrs: { to: "/logout" },
-                            nativeOn: {
-                              click: function($event) {
-                                return _vm.toggleDropdown($event)
-                              }
-                            }
-                          },
-                          [
-                            _vm._v(
-                              "\n                        Logout\n                    "
-                            )
-                          ]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                )
-              ]
+                      [_vm._v("\n                    Logout\n                ")]
+                    )
+                  : _vm._e()
+              ],
+              1
             )
           ]
         )
@@ -22286,20 +22174,13 @@ var render = function() {
         [
           _c("task-form"),
           _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "box has-background-white-ter" },
-            [
-              _c("search"),
-              _vm._v(" "),
-              _c("task-filter"),
-              _vm._v(" "),
-              _vm.$store.state.tasks.length !== 0
-                ? _c("div", [_c("task-list"), _vm._v(" "), _c("pagination")], 1)
-                : _c("div", [_c("p", [_vm._v("No tasks found.")])])
-            ],
-            1
-          )
+          _c("search"),
+          _vm._v(" "),
+          _c("task-filter"),
+          _vm._v(" "),
+          _vm.$store.state.tasks.length !== 0
+            ? _c("div", [_c("task-list"), _vm._v(" "), _c("pagination")], 1)
+            : _c("div", [_c("p", [_vm._v("No tasks found.")])])
         ],
         1
       )
@@ -22335,15 +22216,11 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("section", { staticClass: "hero is-fullheight-with-navbar" }, [
-      _c("div", { staticClass: "hero-body" }, [
-        _c("div", { staticClass: "container" }, [
-          _c("h1", { staticClass: "title" }, [
-            _vm._v("\n                Task List App\n            ")
-          ])
-        ])
-      ])
-    ])
+    return _c(
+      "section",
+      { staticClass: "hero is-fullheight-with-navbar has-text-centered" },
+      [_c("h1", { staticClass: "title" }, [_vm._v("Todo app")])]
+    )
   }
 ]
 render._withStripped = true
