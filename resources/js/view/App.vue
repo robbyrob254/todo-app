@@ -3,16 +3,14 @@
         <div class="hero-body">
             <div class="container">
                 <task-form></task-form>
-                <div class="box has-background-white-ter">
-                    <search></search>
-                    <task-filter></task-filter>
-                    <div v-if="$store.state.tasks.length !== 0">
-                        <task-list></task-list>
-                        <pagination></pagination>
-                    </div>
-                    <div v-else>
-                        <p>No tasks found.</p>
-                    </div>
+                <search></search>
+                <task-filter></task-filter>
+                <div v-if="$store.state.tasks.length !== 0">
+                    <task-list></task-list>
+                    <pagination></pagination>
+                </div>
+                <div v-else>
+                    <p>No tasks found.</p>
                 </div>
             </div>
         </div>
