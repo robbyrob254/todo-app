@@ -1,6 +1,15 @@
 <template>
-    <section class="hero is-fullheight-with-navbar has-text-centered">
-        <h1 class="title">Todo app</h1>
+    <section class="hero is-fullheight-with-navbar">
+        <div class="hero-body">
+            <div class="container">
+                <p class="title">
+                    TODO APP
+                </p>
+                <p class="subtitle">
+
+                </p>
+            </div>
+        </div>
     </section>
 </template>
 
@@ -9,4 +18,5 @@
         name: 'LandingPage'
     }
 </script>
+
 

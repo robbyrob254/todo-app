@@ -8,45 +8,34 @@
                             <strong>Register</strong>
                             <form @submit.prevent="register">
                                 <div class="field">
-                                    <p class="control has-icons-left">
+                                    <p class="control">
                                         <input class="input" type="text" placeholder="Name"
                                             v-model="credentials.name"
                                             :class="{ 'is-danger': hasNameError }">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-user"></i>
-                                        </span>
                                     </p>
                                     <p class="help is-danger">{{ errors.name }}</p>
                                 </div>
                                 <div class="field">
-                                    <p class="control has-icons-left">
+                                    <p class="control">
                                         <input class="input" type="email" placeholder="Email"
                                             v-model="credentials.email"
                                             :class="{ 'is-danger': hasEmailError}">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-envelope"></i>
-                                        </span>
                                     </p>
                                     <p class="help is-danger">{{ errors.email }}</p>
                                 </div>
                                 <div class="field">
-                                    <p class="control has-icons-left">
+                                    <p class="control">
                                         <input class="input" type="password" placeholder="Password"
                                             v-model="credentials.password"
                                             :class="{ 'is-danger': hasPasswordError }">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
                                     </p>
                                 </div>
                                 <div class="field">
-                                    <p class="control has-icons-left">
+                                    <p class="control">
                                         <input class="input" type="password" placeholder="Confirm password"
                                             v-model="credentials.password_confirmation"
                                             :class="{ 'is-danger': hasPasswordError }">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
+
                                     </p>
                                     <p class="help is-danger">{{ errors.password }}</p>
                                 </div>

@@ -7,23 +7,17 @@
                         <div class="box">
                             <form @submit.prevent="login">
                                 <div class="field">
-                                    <p class="control has-icons-left">
+                                    <p class="control">
                                         <input class="input" type="email" placeholder="Email"
                                             v-model="username"
                                             :class="{ 'is-danger': hasError }">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-envelope"></i>
-                                        </span>
                                     </p>
                                 </div>
                                 <div class="field">
-                                    <p class="control has-icons-left">
+                                    <p class="control">
                                         <input class="input" type="password" placeholder="Password"
                                             v-model="password"
                                             :class="{ 'is-danger': hasError }">
-                                        <span class="icon is-small is-left">
-                                            <i class="fas fa-lock"></i>
-                                        </span>
                                     </p>
                                     <p class="help is-danger">{{ serverError }}</p>
                                 </div>

@@ -1,20 +1,16 @@
 <template>
-    <section class="hero is-fullheight-with-navbar">
-        <div class="hero-body">
-            <div class="container">
-                <task-form></task-form>
-                <search></search>
-                <task-filter></task-filter>
-                <div v-if="$store.state.tasks.length !== 0">
-                    <task-list></task-list>
-                    <pagination></pagination>
-                </div>
-                <div v-else>
-                    <p>No tasks found.</p>
-                </div>
-            </div>
+    <div class="container">
+        <task-form></task-form>
+        <search></search>
+        <task-filter></task-filter>
+        <div v-if="$store.state.tasks.length !== 0">
+            <task-list></task-list>
+            <pagination></pagination>
         </div>
-    </section>
+        <div v-else>
+            <p>No tasks found.</p>
+        </div>
+    </div>
 </template>
 
 <script>
