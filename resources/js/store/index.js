@@ -99,7 +99,7 @@ export const store = new Vuex.Store({
             dispatch('fetchTasks')
         },
         fetchTasks({commit, getters}) {
-            console.log(getters.path)
+            //console.log(getters.path)
             fetch(getters.path, {
                 headers: {
                     'Content-Type': 'application/json',

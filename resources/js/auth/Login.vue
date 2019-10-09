@@ -59,6 +59,7 @@
                     this.$router.push('/tasks')
                 })
                 .catch(err => {
+                    console.log(err)
                     if(err.hasOwnProperty('message'))
                         this.serverError = err.message
                 })
