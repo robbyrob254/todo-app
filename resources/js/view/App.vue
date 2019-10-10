@@ -1,7 +1,6 @@
 <template>
     <div class="container">
         <task-form></task-form>
-        <search></search>
         <task-filter></task-filter>
         <div v-if="$store.state.tasks.length !== 0">
             <task-list></task-list>
@@ -14,7 +13,6 @@
 </template>
 
 <script>
-    import Search from '../components/Search.vue'
     import TaskFilter from '../components/TaskFilter.vue'
     import TaskList from '../components/TaskList.vue'
     import Pagination from '../components/Pagination.vue'
@@ -23,7 +21,6 @@
     export default {
         name: 'App',
         components: {
-            Search,
             TaskFilter,
             TaskList,
             Pagination,

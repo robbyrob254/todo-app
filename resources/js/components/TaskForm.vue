@@ -1,5 +1,5 @@
 <template>
-    <form class="box" @submit.prevent="addTask">
+    <form @submit.prevent="addTask">
         <div class="field">
             <label class="label">New Task</label>
             <div class="field has-addons">
